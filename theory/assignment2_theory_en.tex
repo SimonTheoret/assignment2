@@ -1,0 +1,347 @@
+\documentclass[12pt]{article}
+\usepackage[canadien]{babel} 
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{todonotes}
+\usepackage{hyperref}
+
+% If your paper is accepted, change the options for the package
+% aistats2e as follows:
+%
+%\usepackage[accepted]{aistats2e}
+%
+% This option will print headings for the title of your paper and
+% headings for the authors names, plus a copyright note at the end of
+% the first column of the first page.
+\setlength{\parindent}{0cm}
+\addtolength{\oddsidemargin}{-2cm}
+\addtolength{\evensidemargin}{-2cm}
+\setlength{\textwidth}{17.78cm}
+\addtolength{\topmargin}{-2.25cm}
+\setlength{\textheight}{23.24cm}
+\addtolength{\parskip}{5mm}
+\pagestyle{fancy}
+
+%************
+%* COMMANDS *
+%************
+
+\input{math_commands}
+
+\newif\ifexercise
+\exercisetrue
+%\exercisefalse
+
+\newif\ifsolution
+\solutiontrue
+%\solutionfalse
+
+\usepackage{booktabs}
+\usepackage[ruled,vlined]{algorithm2e}
+
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{exercise}{Question}%[chapter]
+\newtheorem{answer}{Answer} % asterisk to remove ordering
+
+\newcommand{\Exercise}[1]{
+\ifexercise#1\fi
+}
+
+\definecolor{answer}{rgb}{0.00, 0.12, 0.60}
+\newcommand{\Answer}[1]{
+\ifsolution\color{answer}\begin{answer}#1\end{answer}\fi
+}
+
+\newif\ifexercise
+\exercisetrue
+%\exercisefalse
+
+\newif\ifsolution
+\solutiontrue
+%\solutionfalse
+
+\usepackage{enumitem}
+\newcommand{\staritem}{
+\addtocounter{enumi}{1}
+\item[$\phantom{x}^{*}$\theenumi]}
+\setlist[enumerate,1]{leftmargin=*, label=\arabic*.}
+
+\newcommand{\customcommandlreg}{\ensuremath{L_{\textnormal{reg}}(f(\mathbf{x}^{(i)}, \mathbf{\theta}), \mathbf{y}^{(i)})}}
+\newcommand{\customcommandloss}{\ensuremath{L}(f(\mathbf{x}^{(i)}, \mathbf{\theta}), \mathbf{y}^{(i)})}
+
+\def\vdelta{{\bm{\delta}}}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+
+\fancyhead{}
+\fancyfoot{}
+
+\fancyhead[L]{
+  \begin{tabular}[b]{l}
+    IFT6135-A2023  \\
+    Prof: Aishwarya Agrawal \\
+  \end{tabular}
+}
+\fancyhead[R]{
+  \begin{tabular}[b]{r}
+    Assignment 2, Theoretical Part   \\
+    RNN, Optimization, Regularization, Transformers, Normalization\\
+  \end{tabular}
+}
+\fancyfoot[C]{- Do not distribute -}
+
+\vspace{1cm}
+
+\shorthandoff{:}
+{\textbf{Due Date: November 14th, 2023 at 11:00 pm}}\\
+
+
+\vspace{-0.5cm}
+\underline{Instructions}%
+\renewcommand{\labelitemi}{\textbullet}
+
+\begin{itemize}
+\item \emph{For all questions, show your work!}
+\item \emph{Use LaTeX and the template we provide when writing your answers.
+You may reuse most of the notation shorthands, equations and/or tables.
+See the assignment policy on the course website for more details.}
+\item \emph{The use of AI tools like Chat-GPT to find answers or parts of answers for any question in this assignment is not allowed. However, you can use these tools to improve the quality of your writing, like fixing grammar or making it more understandable. If you do use these tools, you must clearly explain how you used them and which questions or parts of questions you applied them to. Failing to do so or using these tools to find answers or parts of answers may result in your work being completely rejected, which means you'll receive a score of 0 for the entire theory or practical section.}
+\item \emph{Submit your answers electronically via Gradescope.}
+\item \emph{TAs for this assignment are \textbf{Thomas Jiralerspong, Saba Ahmadi, and Shuo Zhang.}}
+\end{itemize}
+
+\vspace{0.2cm}
+\begin{exercise}[3] (\textbf{Normalization})
+    \label{ex:weightnorm}
+    This question is about normalization techniques.
+    \item Batch normalization, layer normalization and instance normalization all involve calculating the mean $\boldsymbol{\mu}$ and variance $\boldsymbol{\sigma^2}$ with respect to different subsets of the tensor dimensions. Given the following 3D tensor, calculate the corresponding mean and variance tensors for each normalization technique: $\boldsymbol{\mu}_{batch}$, $\boldsymbol{\mu}_{layer}$, $\boldsymbol{\mu}_{instance}$, $\boldsymbol{\sigma}^2_{batch}$, $\boldsymbol{\sigma}^2_{layer}$, and $\boldsymbol{\sigma}^2_{instance}$. 
+    \\
+    $$\begin{bmatrix}\begin{bmatrix}2, 4, 3 \\ 2, 1, 2\end{bmatrix}, \begin{bmatrix}1, 2, 3 \\ 4, 1, 1\end{bmatrix}, \begin{bmatrix}2, 1, 3 \\ 3, 2, 4\end{bmatrix}, \begin{bmatrix}1, 4, 2 \\ 2, 4, 3\end{bmatrix} \end{bmatrix}$$
+    
+    The size of this tensor is 4 x 2 x 3 which corresponds to the batch size, number of channels, and  number of features respectively.
+
+    \Answer{
+    % Write your answer here
+    }
+\end{exercise}
+
+\begin{exercise}[4-6-6] (\textbf{Regularization})
+    \label{ex:weight-decay-and-l2-regularization}
+    In this question, you will reconcile the relationship between L2 regularization and weight decay for the Stochastic Gradient Descent (SGD) and Adam optimizers.
+    Imagine you are training a neural network (with learnable weights $\mathbf{\theta}$) with a loss function $L(f(\mathbf{x}^{(i)}, \mathbf{\theta}), \mathbf{y}^{(i)})$, under two different schemes.
+    The \emph{weight decay} scheme uses a modified SGD update rule: the weights $\mathbf{\theta}$ decay exponentially by a factor of $\lambda$. That is, the weights at iteration $i + 1$ are computed as
+    \[
+        \mathbf{\theta}_{i + 1} = \mathbf{\theta}_i - \eta \frac{\partial L(f(\mathbf{x}^{(i)}, \mathbf{\theta}_i), \mathbf{y}^{(i)})}{\partial \mathbf{\theta}_i} - \lambda \mathbf{\theta}_i
+    \]
+    where $\eta$ is the learning rate of the SGD optimizer.
+    The \emph{L2 regularization} scheme instead modifies the loss function (while maintaining the typical SGD or Adam update rules). The modified loss function is
+    \[
+        \customcommandlreg{} = L(f(\mathbf{x}^{(i)}, \mathbf{\theta}), \mathbf{y}^{(i)}) + \gamma \| \mathbf{\theta} \|_2^2
+    \]
+    \begin{enumerate}[label=\arabic{exercise}.\arabic*]
+        \item Prove that the \emph{weight decay} scheme that employs the modified SGD update is identical to an \emph{L2 regularization} scheme that employs a standard SGD update rule.
+        \item Consider a ``decoupled'' weight decay scheme for the Adam algorithm (see lecture slides) with the following two update rules.
+            \begin{itemize}
+                \item The \textbf{Adam-L2-reg} scheme computes the update by employing an L2 regularization scheme (same as the question above).
+                \item The \textbf{Adam-weight-decay} scheme computes the update as $\mathbf{\Delta \theta} = - \left( \epsilon \frac{\mathbf{\hat{s}}}{\sqrt{\hat{\mathbf{r}}} + \delta} + \lambda \mathbf{\theta} \right)$.
+            \end{itemize}
+        Now, assume that the neural network weights can be partitioned into two disjoint sets based on their gradient magnitude: $\mathbf{\theta} = \{\mathbf{\theta_{\textnormal{small}}}, \mathbf{\theta_{\textnormal{large}}}\}$, where each weight $\theta_s \in \mathbf{\theta_{\textnormal{small}}}$ has a much smaller gradient magnitude than each weight $\theta_l \in \mathbf{\theta_{\textnormal{large}}}$. Using this information provided, answer the following questions. In each case, provide a brief explanation as to why your answer holds.
+        \begin{enumerate}
+            \item Under the \textbf{Adam-L2-reg} scheme, which set of weights among $\mathbf{\theta_{\textnormal{small}}}$ and $\mathbf{\theta_{\textnormal{large}}}$ would you expect to be regularized (i.e., driven closer to zero) more strongly than the other? Why?
+            \item Would your answer change for the \textbf{Adam-weight-decay} scheme? Why/why not?
+        \end{enumerate}
+        (Note: for the two sub-parts above, we are interested in the rate at which the weights are regularized, \emph{relative} to their initial magnitudes.)
+        \item In the context of all of the discussion above, argue that weight decay is a better scheme to employ as opposed to L2 regularization; particularly in the context of adaptive gradient based optimizers. (Hint: think about how each of these schemes regularize each parameter, and also about what the overarching objective of regularization is).
+    \end{enumerate}
+
+    \Answer{
+    % Write your answer here
+    }
+\end{exercise}
+
+\begin{exercise}[1-1-4-6-2] (\textbf{Decoding})
+\label{ex:decoding}
+    Suppose that we have a vocabulary containing $N$ possible words, including a special token \texttt{<BOS>} to indicate the beginning of a sentence. Recall that in general, a language model with a full context can be written as
+    \begin{equation*}
+        p(w_{1}, w_{2}, \ldots, w_{T} \mid w_{0}) = \prod_{t=1}^{T} p(w_{t} \mid w_{0}, \ldots, w_{t-1}).
+    \end{equation*}
+    We will use the notation $\vw_{0:t-1}$ to denote the (partial) sequence $(w_{0}, \ldots, w_{t-1})$. Once we have a fully trained language model, we would like to generate realistic sequences of words from our language model, starting with our special token \texttt{<BOS>}. In particular, we might be interested in generating the most likely sequence $\vw_{1:T}^{\star}$ under this model, defined as
+    \begin{equation}
+        \vw_{1:T}^{\star} = \argmax_{\vw_{1:T}} p(\vw_{1:T} \mid w_{0} = \textrm{\texttt{<BOS>}}).
+        \label{eq:joint_prob}
+    \end{equation}
+    For clarity we will drop the explicit conditioning on $w_{0}$, assuming from now on that the sequences always start with the \texttt{<BOS>} token.
+    
+    \begin{enumerate}[label=\arabic{exercise}.\arabic*]
+        \item How many possible sequences of length $T+1$ starting with the token \texttt{<BOS>} can be generated in total? Give an exact expression, without the $O$ notation. Note that the length $T+1$ here includes the \texttt{<BOS>} token.
+        
+        \item To determine the most likely sequence $\vw_{1:T}^{\star}$, one could perform exhaustive enumeration of all possible sequences and select the one with the highest joint probability (as defined in equation \ref{eq:joint_prob}). Comment on the feasibility of this approach. Is it scalable with vocabulary size?
+    
+        \item In light of the difficulties associated with exhaustive enumeration, it becomes essential to employ practical search strategies to obtain a reasonable approximation of the most likely sequence.
+        
+        In order to generate $B$ sequences having high likelihood, one can use a heuristic algorithm called \emph{Beam search decoding}, whose pseudo-code is given in Algorithm~\ref{alg:beam-search-decoding} below
+    
+        \begin{minipage}{\linewidth}
+        \begin{algorithm}[H]
+        \DontPrintSemicolon
+        \KwIn{A language model $p(\vw_{1:T} \mid w_{0})$, the beam width $B$}
+        \KwOut{$B$ sequences $\vw_{1:T}^{(b)}$ for $b \in \{1, \ldots, B\}$}
+        Initialization: $w_{0}^{(b)} \leftarrow \textrm{\texttt{<BOS>}}$ for all $b \in \{1,\ldots,B\}$\;
+        Initial log-likelihoods: $l_{0}^{(b)} \leftarrow 0$ for all $b \in \{1,\ldots,B\}$\;
+        \For{$t = 1$ \KwTo $T$}{
+          \For{$b = 1$ \KwTo $B$}{
+            \For{$j = 1$ \KwTo $N$}{
+              $s_{b}(j) \leftarrow l_{t-1}^{(b)} + \log p(w_{t} = j \mid \vw_{0:t-1}^{(b)})$\;
+            }
+          }
+          \For{$b = 1$ \KwTo $B$}{
+            Find $(b', j)$ such that $s_{b'}(j)$ is the $b$-th largest score\;
+            Save the partial sequence $b'$: $\widetilde{\vw}_{0:t-1}^{(b)} \leftarrow \vw_{0:t-1}^{(b')}$\;
+            Add the word $j$ to the sequence $b$: $w_{t}^{(b)} \leftarrow j$\;
+            Update the log-likelihood: $l_{t}^{(b)} \leftarrow s_{b'}(j)$\;
+          }
+          Assign the partial sequences: $\vw_{0:t-1}^{(b)} \leftarrow \widetilde{\vw}_{0:t-1}^{(b)}$ for all $b \in \{1, \ldots, B\}$\;
+        }
+        \caption{Beam search decoding}
+        \label{alg:beam-search-decoding}
+        \end{algorithm}
+        \end{minipage}
+        
+        What is the time complexity of Algorithm~\ref{alg:beam-search-decoding}? Its space complexity? Write the algorithmic complexities using the $O$ notation, as a function of $T$, $B$, and $N$. Is this a practical decoding algorithm when the size of the vocabulary is large?
+    
+        
+        \item The different sequences that can be generated with a language model can be represented as a tree, where the nodes correspond to words and edges are labeled with the log-probability $\log p(w_{t}\mid \vw_{0:t-1})$, depending on the path $\vw_{0:t-1}$. In this question, consider the following language model (where the low probability paths have been removed for clarity)
+    
+        \hspace*{-2.5em}\begin{minipage}{\linewidth}
+        \centering
+        \begin{tikzpicture}[scale=0.9,every node/.style={shape=rectangle, inner sep=5pt, align=center}, level 3/.style={sibling distance=5.5em}, level 2/.style={sibling distance=11em}, level 1/.style={sibling distance=22em}, edge from parent path={(\tikzparentnode.south) .. controls +(0,-0.7) and +(0,0.7) .. (\tikzchildnode.north)}, edge from parent/.style={draw, thick, -latex}, logl/.style={draw=none, font=\footnotesize}, label/.style={anchor=west, align=flush left}]
+          \node {\texttt{<BOS>}}
+            child { node {\texttt{the}}
+              child { node {\texttt{green\vphantom{l}}}
+                child { node {\texttt{ellipse\vphantom{q}}} edge from parent node[above left,logl] {$-3.6$} }
+                child { node {\texttt{rectangle}} edge from parent node[above right,logl] {$-3.3$} } edge from parent node[above left,logl] {$-3.4$} }
+              child { node {\texttt{red}}
+                child { node {\texttt{circle\vphantom{q}}} edge from parent node[above left,logl] {$-4.8$} }
+                child { node {\texttt{rectangle}} edge from parent node[above right,logl] {$-4.5$} } edge from parent node[above right,logl] {$-3.1$} } edge from parent node[above left,logl] {$-1.5$} }
+            child { node {\texttt{a}}
+              child { node {\texttt{blue}}
+                child { node {\texttt{ellipse\vphantom{q}}} edge from parent node[above left,logl] {$-5.4$} }
+                child { node {\texttt{square\vphantom{l}}} edge from parent node[above right,logl] {$-5.0$} } edge from parent node[above left,logl] {$-2.5$} }
+              child { node {\texttt{red}}
+                child { node {\texttt{circle\vphantom{q}}} edge from parent node[above left,logl] {$-4.9$} }
+                child { node {\texttt{square\vphantom{l}}} edge from parent node[above right,logl] (logl_lvl3) {$-5.1$} } edge from parent node[above right,logl] (logl_lvl2) {$-2.7$} } edge from parent node[above right,logl] (logl_lvl1) {$-1.8$} };
+                
+                \node[label, right=1em of logl_lvl3] (logl_lvl3_label) {$\log p(w_{3}\mid \vw_{0:2})$};
+                \node[label] (logl_lvl2_label) at (logl_lvl2 -| logl_lvl3_label.west) {$\log p(w_{2}\mid \vw_{0:1})$};
+                \node[label] (logl_lvl1_label) at (logl_lvl1 -| logl_lvl3_label.west) {$\log p(w_{1}\mid w_{0})$};
+        \end{tikzpicture}
+        \end{minipage}
+        
+    \begin{enumerate}[label=\arabic{exercise}.\arabic{enumi}.\alph*]            
+            \item \emph{Greedy decoding} is a simple algorithm where the next word $\overline{w}_{t}$ is selected by maximizing the conditional probability $p(w_{t}\mid \overline{\vw}_{0:t-1})$ (with $\overline{w}_{0} = \textrm{\texttt{<BOS>}}$)
+            \begin{equation*}
+                \overline{w}_{t} = \argmax_{w_{t}} \log p(w_{t}\mid \overline{\vw}_{0:t-1}).
+            \end{equation*}
+            Find $\overline{\vw}_{1:3}$ using greedy decoding on this language model, and its log-likelihood $\log p(\overline{\vw}_{1:3})$.
+            \item Apply beam search decoding with a beam width $B = 2$ to this language model, and find $\vw_{1:3}^{(1)}$ and $\vw_{1:3}^{(2)}$, together with their respective log-likelihoods.
+        \end{enumerate}
+        \item Please highlight the primary limitation that stands out to you for each of the discussed methods (greedy decoding and beam search).
+    \end{enumerate}
+
+    \Answer{
+    % Write your answer here
+    }
+\end{exercise}
+\begin{exercise} [3-4-2-2] (\textbf{RNN})
+    \label{ex:rnn_spectral}
+    This question is about activation functions and vanishing/exploding gradients in recurrent neural networks (RNNs). Let $\sigma:\R\rightarrow\R$ be an activation function. 
+    When the argument is a vector, we apply $\sigma$ element-wise. 
+    Consider the following recurrent unit:
+    $$\vh_t = \sigma(\mW \vh_{t-1} + \mU\vx_t + \vb)$$
+    \begin{enumerate}[label=\arabic{exercise}.\arabic*]
+        \item Show that applying the activation function in the following way: $\vg_t = \mW\sigma(\vg_{t-1}) + \mU\vx_t + \vb$ results  in an equivalent recurrence as that defined above (i.e. express $\vg_t$ in terms of $\vh_t$).
+        More formally, you need to prove it using mathematical induction. 
+        You only need to prove the induction step in this question, assuming your expression holds for time step $t-1$.
+        % \staritem
+        \item
+        Let $||\mA||$ denote the $L_2$ operator norm
+        
+        \footnote{
+        The $L_2$ operator norm of a matrix $\mA$ is is an \textit{induced norm} corresponding to the $L_2$ norm of vectors. 
+        You can try to prove the given properties as an exercise.
+        }
+        of matrix $\mA$ ($||\mA||:=\max_{\vx:||\vx||=1}||\mA\vx||$). 
+        Assume $\sigma(x)$ has bounded derivative, i.e. $|\sigma'(x)|\leq \gamma$ for some $\gamma>0$ and for all $x$. We denote as $\lambda_1(\cdot)$ the largest eigenvalue of a symmetric matrix. Show that if the largest eigenvalue of the weights is bounded by $\frac{\delta^2}{\gamma^2}$ for some $0 \leq \delta < 1$, gradients of the hidden state will vanish over time (here, use $g_t$ as the definition of the hidden state),    
+         i.e.  
+        $$\lambda_1(\mW^\top\mW)\leq\frac{\delta^2}{\gamma^2} \quad\implies\quad \bigg{|}\bigg{|}\frac{\partial\vh_T}{\partial\vh_0}\bigg{|}\bigg{|}  \rightarrow0 \,\text{ as }\,T\rightarrow\infty$$
+        
+        Use the following properties of the $L_2$ operator norm 
+        $$||\mA\mB||\leq||\mA||\,||\mB|| \qquad \text{ and } \qquad ||\mA||=\sqrt{\lambda_1(\mA^\top\mA)}$$
+        
+        \item What do you think will happen to the gradients of the hidden state if the condition in the previous question is reversed, i.e. if the largest eigenvalue of the weights is larger than $\frac{\delta^2}{\gamma^2}$? 
+        Is this condition \textit{necessary} and/or \textit{sufficient} for the gradient to explode? If this condition is not sufficient, in what scenario is it not exploding given the condition is met?(Answer in 1-2 sentences)
+        \item Assume we have the reverse problem of exploding gradient, what measures can we take to address it? Propose 2 strategies where one takes into account the direction of the gradient and the other does not. Which is preferred according to you and why?
+    \end{enumerate}
+    \vspace{0.4cm}
+    \Answer{
+    % Write your answer here
+    }
+\end{exercise}
+
+\begin{exercise}[5-5-5-5] (\textbf{Paper Review: Show, Attend and Tell})
+    In this question, you are going to write a \textbf{one page review} of the \href{https://arxiv.org/abs/1502.03044}{Show, Attend and Tell paper}. Your review should have the following four sections: Summary, Strengths, Weaknesses, and Reflections. For each of these sections, below we provide a set of questions you should ask about the paper as you read it. Then, discuss your thoughts about these questions in your review.
+    \begin{enumerate}[label=(\theexercise.\arabic*)]
+        \item \textbf{Summary:}
+        \begin{enumerate}
+            \item What is this paper about?
+            \item What is the main contribution? 
+            \item Describe the main approach and results. Just facts, no opinions yet. 
+        \end{enumerate}
+        \item \textbf{Strengths:}
+        \begin{enumerate}
+            \item Is there a new theoretical insight?
+            \item Or a significant empirical advance? Did they solve a standing open problem? 
+            \item Or a good formulation for a new problem? 
+            \item Any good practical outcome (code, algorithm, etc)?
+            \item Are the experiments well executed? 
+            \item Useful for the community in general? 
+        \end{enumerate}
+        \item \textbf{Weaknesses:}
+        \begin{enumerate}
+            \item What can be done better?
+            \item Any missing baselines? Missing datasets?
+            \item Any odd design choices in the algorithm not explained well? Quality of writing?
+            \item Is there sufficient novelty in what they propose? Minor variation of previous work? 
+            \item Why should anyone care? Is the problem interesting and significant? 
+        \end{enumerate}
+        \item \textbf{Reflections:}
+        \begin{enumerate}
+            \item How does this relate to other concepts you have seen in the class?
+            \item What are the next research directions in this line of work?
+            \item What (directly or indirectly related) new ideas did this paper give you? What would you be curious to try?
+        \end{enumerate}
+    \end{enumerate}
+    
+    This question is subjective and so we will accept a variety of answers. You are expected to analyze the paper and offer your own perspective and ideas, beyond what the paper itself discusses.
+
+    \Answer{
+    % Write your answer here
+    }
+\end{exercise}
+
+
+\end{document}
