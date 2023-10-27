@@ -136,6 +136,42 @@ See the assignment policy on the course website for more details.}
 
     \Answer{
     % Write your answer here
+      To make our results more compact, we are gonna write them in the NumPy
+      format, i.e. in an array. Suppose $B=4$ is batch size, $F=3$ is the number
+      of features and $C =2$ is the number of channels.
+    \subsubsection*{Batch normalization}
+      \begin{align*}
+        u_{batch} &= (FB)^{-1} \sum_{f = 1}^{F}  \sum_{b= i}^{B} x_{fb}\\
+        &= [2.333, 2.416]
+      \end{align*} and
+      \begin{align*}
+        \sigma_{batch} &= (FB)^{-1} \sum_{f = 1}^{F}  \sum_{b= i}^{B}(x_{fb} -\mu_{batch})^{2}\\
+        &= [1.055, 1.243]
+      \end{align*}
+    \subsubsection*{Layer normalization}
+      \begin{align*}
+        u_{layer} &= (FC)^{-1} \sum_{f = 1}^{F}  \sum_{c= i}^{C} x_{fc}\\
+        &= [2.333, 2, 2.5, 2.666]
+      \end{align*} and
+      \begin{align*}
+        \sigma_{layer} &= (FC)^{-1} \sum_{f = 1}^{F}  \sum_{c= i}^{B}(x_{fc} -\mu_{layer})^{2}\\
+        &= [0.888, 1.333, 0.916, 1.222]
+      \end{align*}
+    \subsubsection*{Instance normalization}
+      \begin{align*}
+        u_{instance} &= (F)^{-1} \sum_{f = 1}^{F}  x_{f}\\
+        &= [[[3        , 1.666],
+       [2        , 2        ],
+       [2        , 3        ],
+       [2.333, 3        ]]]
+      \end{align*} and
+      \begin{align*}
+        \sigma_{Instance} &= (F)^{-1} \sum_{f = 1}^{F}  x_{f}^{2} -\mu_{Instance}^{2}\\
+        &= [[0.666, 0.222],
+       [0.666, 2.        ],
+       [0.666, 0.666],
+          [1.555, 0.666]]
+      \end{align*}
     }
 \end{exercise}
 
