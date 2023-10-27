@@ -6,3 +6,9 @@ tmp/
 *.dvi
 *.aux
 .projectile
+*.log
+*.fls
+*.out
+*.fdb_latexmk
+__pycache__
+.auctex-auto
