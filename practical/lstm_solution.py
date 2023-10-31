@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -15,7 +15,6 @@ class LSTM(nn.Module):
         learn_embeddings=False,
         _embedding_weight=None,
     ):
-
         super(LSTM, self).__init__()
         self.vocabulary_size = vocabulary_size
         self.embedding_size = embedding_size
@@ -79,9 +78,9 @@ class LSTM(nn.Module):
         c = self.embedding(inputs)
         s, (hn, cn) = self.lstm(c, hidden_states)
         logit = self.classifier(s)
-        log_proba = nn.LogSoftmax(dim = -1) # Right dimension ?
+        log_proba = nn.LogSoftmax(dim=-1)  # Right dimension ?
         out = log_proba(logit)
-        return out, (hn,cn)
+        return out, (hn, cn)
 
     def loss(self, log_probas, targets, mask):
         """Loss function.
@@ -116,10 +115,18 @@ class LSTM(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        T = torch.sum(mask) # Accounts for batch_dim !
-        new_mask = torch.unsqueeze(mask,-1) # add dimension at position -1 to match log_probas
-        log_probas = log_probas * new_mask
-        pass
+        batch_size = log_probas.shape[0]
+        sequence_length = log_probas.shape[1]
+        vocab_size = log_probas.shape[2]
+        T = torch.sum(mask)  # Accounts for batch_dim !
+        total_loss = 0
+        for i in range(batch_size):
+            weight = torch.zeros(sequence_length, vocab_size)
+            log_prob = log_probas[i, :, :]  # ith sequence
+            for index, element in enumerate(targets[i, :]):
+                weight[index, element] = 1  # 1 at index, element, 0 elsewhere
+            total_loss += torch.sum(torch.mul(log_prob, weight))
+        return total_loss / T
 
     def initial_states(self, batch_size, device=None):
         if device is None:

@@ -41,7 +41,11 @@ class LayerNorm(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        pass
+        mean = torch.mean(inputs, dim=0)
+        var = torch.var(inputs, dim=0, correction=0)
+        num = inputs - mean
+        denom = torch.sqrt(var + self.eps)
+        return num / denom * self.weight + self.bias
 
     def reset_parameters(self):
         nn.init.ones_(self.weight)
@@ -186,7 +190,13 @@ class MultiHeadedAttention(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        pass
+        batch_size = tensor.shape[0]
+        sequence_length = tensor.shape[1]
+        dim = tensor.shape[-1]//self.num_heads
+        tensor = torch.reshape(
+            tensor, (batch_size, sequence_length, self.num_heads, dim)
+        )
+        return torch.transpose(tensor, 1, 2)
 
     def merge_heads(self, tensor):
         """Merge the head vectors.
@@ -298,7 +308,6 @@ class MiniGPT1(nn.Module):
         _tokens_embedding_weight=None,
         _positional_embedding_weight=None,
     ):
-
         super(MiniGPT1, self).__init__()
         self.vocabulary_size = vocabulary_size
         self.embedding_size = embedding_size
