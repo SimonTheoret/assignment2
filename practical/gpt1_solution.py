@@ -114,7 +114,9 @@ class MultiHeadedAttention(nn.Module):
         b = a[2] >= a[3]
         b = b.astype(int)
         s = torch.from_numpy(b)
-        xp = x*s
+        xp = x*s - (10**4)*(1-s)
+        return F.softmax(xp, dim = 2)
+
 
     def apply_attention(self, queries, keys, values):
         """Apply the attention.
