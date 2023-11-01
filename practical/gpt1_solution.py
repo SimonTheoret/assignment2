@@ -108,7 +108,13 @@ class MultiHeadedAttention(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        pass
+
+        x = torch.matmul(queries , torch.transpose(keys, 2, 3))/ torch.sqrt(torch.tensor(queries.shape[3]))
+        a = np.indices(x.shape)
+        b = a[2] >= a[3]
+        b = b.astype(int)
+        s = torch.from_numpy(b)
+        xp = x*s
 
     def apply_attention(self, queries, keys, values):
         """Apply the attention.
@@ -191,7 +197,7 @@ class MultiHeadedAttention(nn.Module):
         # TODO: Write your code here
         # ==========================
         batch_size = tensor.shape[0]
-        dim = tensor.shape[-1]//self.num_heads
+        dim = tensor.shape[-1] // self.num_heads
         tensor = torch.reshape(
             tensor, (batch_size, self.sequence_length, self.num_heads, dim)
         )
@@ -225,8 +231,10 @@ class MultiHeadedAttention(nn.Module):
         # ==========================
         batch_size = tensor.shape[0]
         dim = tensor.shape[3]
-        tensor = torch.transpose(tensor, 1,2)
-        return torch.reshape(tensor, (batch_size, self.sequence_length, self.num_heads*dim))
+        tensor = torch.transpose(tensor, 1, 2)
+        return torch.reshape(
+            tensor, (batch_size, self.sequence_length, self.num_heads * dim)
+        )
 
     def forward(self, hidden_states):
         """Multi-headed attention.
