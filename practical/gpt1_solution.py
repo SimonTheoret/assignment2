@@ -419,8 +419,10 @@ class MiniGPT1(nn.Module):
         # TODO: Write your code here
         # ==========================
         c = self.embeddings(inputs)
-
-        pass
+        logits = self.classifier(self.layers(c))
+        log_proba = nn.LogSoftmax(dim=-1)  # Right dimension ?
+        out = log_proba(logits)
+        return out
 
     def loss(self, log_probas, targets, mask):
         """Loss function.
