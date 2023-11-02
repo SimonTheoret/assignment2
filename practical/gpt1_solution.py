@@ -389,7 +389,7 @@ class MiniGPT1(nn.Module):
         # TODO: Write your code here
         # ==========================
         positions = np.indices(inputs.shape)
-        positions = positions[-1]
+        positions = torch.Tensor(positions[-1])
         return self.embedding.forward(inputs, positions)
 
     def forward(self, inputs):
@@ -414,9 +414,12 @@ class MiniGPT1(nn.Module):
             of the batch (index 0).
         """
 
+
         # ==========================
         # TODO: Write your code here
         # ==========================
+        c = self.embeddings(inputs)
+
         pass
 
     def loss(self, log_probas, targets, mask):
