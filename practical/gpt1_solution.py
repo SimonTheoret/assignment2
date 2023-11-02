@@ -388,7 +388,9 @@ class MiniGPT1(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        pass
+        positions = np.indices(inputs.shape)
+        positions = positions[-1]
+        return self.embedding.forward(inputs, positions)
 
     def forward(self, inputs):
         """Mini GPT-1.
