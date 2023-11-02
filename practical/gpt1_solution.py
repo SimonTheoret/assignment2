@@ -58,6 +58,10 @@ class MultiHeadedAttention(nn.Module):
         self.head_size = head_size
         self.num_heads = num_heads
         self.sequence_length = sequence_length
+        self.WQ = nn.Linear(in_features = self.head_size, out_features = self.head_size)
+        self.WV = nn.Linear(in_features = self.head_size, out_features = self.head_size)
+        self.WK = nn.Linear(in_features = self.head_size, out_features = self.head_size)
+        self.WO = nn.Linear(in_features = self.num_heads * self.head_size, out_features = self.num_heads* self.head_size)
 
         # ==========================
         # TODO: Write your code here
@@ -156,6 +160,8 @@ class MultiHeadedAttention(nn.Module):
             4th head (index 3) for the 6th token (index 5) in the 2nd sequence
             (index 1) in the batch (it is a vector of size `head_size`).
 
+        attention_weights (`torch.FloatTensor` of shape `(batch_size, num_heads, sequence_length, sequence_length)`)
+
         Returns
         -------
         outputs (`torch.FloatTensor` of shape `(batch_size, sequence_length, num_heads * head_size)`)
@@ -169,7 +175,9 @@ class MultiHeadedAttention(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        pass
+        weights = self.get_attention_weights(queries, keys)
+        attended_values = weights @ values
+        return self.merge_heads(attended_values)
 
     def split_heads(self, tensor):
         """Split the head vectors.
@@ -273,7 +281,13 @@ class MultiHeadedAttention(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        pass
+        X = self.split_heads(hidden_states)
+        Q = self.WQ(X)
+        K = self.WK(X)
+        V = self.WV(X)
+        Y = self.apply_attention(Q,K,V)
+        o = self.WO(Y)
+        return o
 
 
 class Block(nn.Module):
