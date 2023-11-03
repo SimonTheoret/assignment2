@@ -115,13 +115,14 @@ class LSTM(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
         batch_size = log_probas.shape[0]
         sequence_length = log_probas.shape[1]
         vocab_size = log_probas.shape[2]
-        T = torch.sum(mask)  # Accounts for batch_dim !
+        T = -1*torch.sum(mask)  # Accounts for batch_dim !
         total_loss = 0
         for i in range(batch_size):
-            weight = torch.zeros(sequence_length, vocab_size)
+            weight = torch.zeros(sequence_length, vocab_size).to(device)
             log_prob = log_probas[i, :, :]  # ith sequence
             for index, element in enumerate(targets[i, :]):
                 weight[index, element] = 1  # 1 at index, element, 0 elsewhere

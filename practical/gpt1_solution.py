@@ -112,12 +112,12 @@ class MultiHeadedAttention(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
         x = torch.matmul(queries , torch.transpose(keys, 2, 3))/ torch.sqrt(torch.tensor(queries.shape[3]))
         a = np.indices(x.shape)
         b = a[2] >= a[3]
         b = b.astype(int)
-        s = torch.from_numpy(b)
+        s = torch.from_numpy(b).to(device)
         xp = x*s - (10**4)*(1-s)
         return F.softmax(xp, dim = 2)
 
@@ -388,8 +388,9 @@ class MiniGPT1(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
         positions = np.indices(inputs.shape)
-        positions = torch.Tensor(positions[-1])
+        positions = torch.IntTensor(positions[-1]).to(device)
         return self.embedding.forward(inputs, positions)
 
     def forward(self, inputs):
@@ -418,8 +419,10 @@ class MiniGPT1(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        c = self.embeddings(inputs)
-        logits = self.classifier(self.layers(c))
+        c = self.get_embeddings(inputs)
+        for i, _ in enumerate(self.layers):
+            c = self.layers[i](c)
+        logits = self.classifier(c)
         log_proba = nn.LogSoftmax(dim=-1)  # Right dimension ?
         out = log_proba(logits)
         return out
@@ -453,7 +456,19 @@ class MiniGPT1(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        pass
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        batch_size = log_probas.shape[0]
+        sequence_length = log_probas.shape[1]
+        vocab_size = log_probas.shape[2]
+        T = -1* torch.sum(mask)  # Accounts for batch_dim !
+        total_loss = 0
+        for i in range(batch_size):
+            weight = torch.zeros(sequence_length, vocab_size).to(device)
+            log_prob = log_probas[i, :, :]  # ith sequence
+            for index, element in enumerate(targets[i, :]):
+                weight[index, element] = 1  # 1 at index, element, 0 elsewhere
+            total_loss += torch.sum(torch.mul(log_prob, weight))
+        return total_loss / T
 
     @classmethod
     def load_embeddings_from(
