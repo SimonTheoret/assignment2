@@ -15,6 +15,7 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage{todonotes}
 \usepackage{hyperref}
+\usepackage{monpackage}
 
 % If your paper is accepted, change the options for the package
 % aistats2e as follows:
@@ -206,6 +207,36 @@ See the assignment policy on the course website for more details.}
 
     \Answer{
     % Write your answer here
+    \subsubsection*{2.1}
+    To show both scheme are equivalent, we can calculate the parameters update
+    for the $L_{2}$ regularization scheme and show both scheme avec the same update:
+    \begin{align*}
+      \theta_{i+1} &= \theta_{i} - \eta \pder{L_{reg}}{\theta_{i}}\\
+      &= \theta_{i} - \eta \pr{\pder{L}{\theta_{i}} + 2 \gamma \theta_{i}}\\
+      &= \theta_{i} - \eta \pder{L}{\theta_{i}} - 2 \eta \gamma \theta_{i}
+    \end{align*}
+    In the case of the weight decay scheme, the weight update are:
+    \begin{equation}
+      \theta_{i+1} = \theta_{i} - \eta \pder{L}{\theta_{i}} - \lambda \theta_{i}
+    \end{equation}
+    We see that by selecting $\gamma = \frac{\lambda}{2 \eta}$, both scheme are identical.
+    \subsubsection*{2.2}
+    % TODO: refaire cette explication
+    I would expect $\theta_{s}$ to be regularized more strongly, mainly due to how
+    the magnitude of the weights do not have much impact on the final gradient
+    update. For example, by taking the limit $\theta \rightarrow \pm \infty$, $\Delta \theta$ tends towards $c  \varepsilon$,
+    with $c$ a constant depending on $\rho_{1}$, $\delta$ and $ \rho_{2}$. Similarily,
+    $\Delta \theta \xrightarrow{\theta \to 0} = \varepsilon k \frac{\rho_{1} s + (1-\rho_{1})h}{(\rho_{2}r+(1-\rho_{2})h^2)^{1/2} + \delta}$,
+    with $k$ a constant depending on $\rho_{1}$ and $\rho_{2}$.  Therefore, the rate of
+    change of the parameters does not depend upon the paremeters themselves in this
+    case.
+    \subsubsection*{2.3}
+    In the first scenario (SGD), both approaches are idntical for the right
+    $\gamma,\, \lambda$ parameters. Adam weight decay has the advantage of reducing the
+    size of all the parameters based on their value, where as with the Adam L2
+    scheme, some large weights are still possible. Therefore, Adam weight decay
+    is probably better at preventing overfitting. As a bonus, it is also less
+    computationally intensive.
     }
 \end{exercise}
 
