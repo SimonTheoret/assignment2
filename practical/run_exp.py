@@ -247,8 +247,8 @@ def main(args):
         test_loss,
         test_ppl,
         test_time,
-        mem_used
-        mem_percentage_used
+        mem_used,
+        mem_percentage_used,
     )
 
 
