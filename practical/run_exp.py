@@ -24,20 +24,20 @@ EMBEDDINGS_URL = (
 """
 # Configs to run
 
-1. python run_exp.py --model lstm --layers 1 --batch_size 16 --log --epochs 10 --optimizer adam
-2. python run_exp.py --model lstm --layers 1 --batch_size 16 --log --epochs 10 --optimizer adamw
-3. python run_exp.py --model lstm --layers 1 --batch_size 16 --log --epochs 10 --optimizer sgd
-4. python run_exp.py --model lstm --layers 1 --batch_size 16 --log --epochs 10 --optimizer momentum
+1. python run_exp.py --model lstm --layers 1 --batch_size 16 --log --epochs 10 --optimizer adam --exp_id lstm_layer_1_adam
+2. python run_exp.py --model lstm --layers 1 --batch_size 16 --log --epochs 10 --optimizer adamw --exp_id lstm_layer_1_adamw
+3. python run_exp.py --model lstm --layers 1 --batch_size 16 --log --epochs 10 --optimizer sgd --exp_id lstm_layer_1_sgd
+4. python run_exp.py --model lstm --layers 1 --batch_size 16 --log --epochs 10 --optimizer momentum --exp_id lstm_layer_1_momentum
 
-5. python run_exp.py --model gpt1 --layers 1 --batch_size 16 --log --epochs 10 --optimizer adam
-6. python run_exp.py --model gpt1 --layers 1 --batch_size 16 --log --epochs 10 --optimizer adamw
-7. python run_exp.py --model gpt1 --layers 1 --batch_size 16 --log --epochs 10 --optimizer sgd
-8. python run_exp.py --model gpt1 --layers 1 --batch_size 16 --log --epochs 10 --optimizer momentum
+5. python run_exp.py --model gpt1 --layers 1 --batch_size 16 --log --epochs 10 --optimizer adam --exp_id gpt1_layer_1_adam
+6. python run_exp.py --model gpt1 --layers 1 --batch_size 16 --log --epochs 10 --optimizer adamw --exp_id gpt1_layer_1_adamw
+7. python run_exp.py --model gpt1 --layers 1 --batch_size 16 --log --epochs 10 --optimizer sgd --exp_id gpt1_layer_1_sgd
+8. python run_exp.py --model gpt1 --layers 1 --batch_size 16 --log --epochs 10 --optimizer momentum --exp_id gpt1_layer_1_momentum
 
-9. python run_exp.py --model lstm --layers 2 --batch_size 16 --log --epochs 10 --optimizer adamw
-10. python run_exp.py --model lstm --layers 4 --batch_size 16 --log --epochs 10 --optimizer adamw
-11. python run_exp.py --model gpt1 --layers 2 --batch_size 16 --log --epochs 10 --optimizer adamw
-12. python run_exp.py --model gpt1 --layers 4 --batch_size 16 --log --epochs 10 --optimizer adamw
+9. python run_exp.py --model lstm --layers 2 --batch_size 16 --log --epochs 10 --optimizer adamw --exp_id lstm_layer_2_adamw
+10. python run_exp.py --model lstm --layers 4 --batch_size 16 --log --epochs 10 --optimizer adamw --exp_id lstm_layer_4_adamw
+11. python run_exp.py --model gpt1 --layers 2 --batch_size 16 --log --epochs 10 --optimizer adamw --exp_id gpt1_layer_2_adamw
+12. python run_exp.py --model gpt1 --layers 4 --batch_size 16 --log --epochs 10 --optimizer adamw --exp_id gpt1_layer_4_adamw
 """
 
 
@@ -295,7 +295,7 @@ if __name__ == "__main__":
     )
     optimization.add_argument(
         "--momentum",
-        type=float,
+
         default=0.9,
         help="momentum for SGD optimizer (default: %(default)s).",
     )
