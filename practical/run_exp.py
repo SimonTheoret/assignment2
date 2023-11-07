@@ -1,3 +1,4 @@
+import nvsmi
 import warnings
 import math
 import os
@@ -43,12 +44,19 @@ EMBEDDINGS_URL = (
 
 def train(epoch, model, dataloader, optimizer, args):
 
+    gpus = nvsmi.get_gpus()
+    gpu = None
+    for gpu in gpus:
+        gpu = gpu
+
     model.train()
 
     losses = []
     total_iters = 0
 
     start_time = time.time()
+
+    used_mem, per_used_mem = [], []
 
     for idx, batch in enumerate(
         tqdm(
@@ -69,7 +77,8 @@ def train(epoch, model, dataloader, optimizer, args):
 
         loss.backward()
         optimizer.step()
-
+        used_mem.append(gpu.mem_used) # gpu mem used during the batch
+        per_used_mem.append(gpu.mem_used/gpu.mem_total)# percentage gpu mem used during the batch
         total_iters += 1
 
         if idx % args.print_every == 0:
@@ -81,8 +90,9 @@ def train(epoch, model, dataloader, optimizer, args):
     perplexity = math.exp(mean_loss)
 
     tqdm.write(f"== [TRAIN] Epoch: {epoch}, Perplexity: {perplexity:.3f} ==>")
-
-    return mean_loss, perplexity, time.time() - start_time
+    avg_used_mem = used_mem.sum()/len(used_mem) # average over batches
+    avg_per_used_mem = used_mem.sum()/len(used_mem) # average over batches
+    return mean_loss, perplexity, time.time() - start_time, avg_used_mem, avg_per_used_mem
 
 
 def evaluate(epoch, model, dataloader, args, mode="val"):
@@ -203,14 +213,18 @@ def main(args):
     train_losses, valid_losses = [], []
     train_ppls, valid_ppls = [], []
     train_times, valid_times = [], []
+    mem_used, mem_percentage_used = [], []
+
     for epoch in range(args.epochs):
 
         tqdm.write(f"====== Epoch {epoch} ======>")
 
-        loss, ppl, wall_time = train(epoch, model, train_dataloader, optimizer, args)
+        loss, ppl, wall_time, avg_mem_used, avg_per_mem_used = train(epoch, model, train_dataloader, optimizer, args)
         train_losses.append(loss)
         train_ppls.append(ppl)
         train_times.append(wall_time)
+        mem_used.append(avg_mem_used)
+        mem_percentage_used.append(avg_per_mem_used)
 
         loss, ppl, wall_time = evaluate(epoch, model, valid_dataloader, args)
         valid_losses.append(loss)
@@ -233,6 +247,8 @@ def main(args):
         test_loss,
         test_ppl,
         test_time,
+        mem_used
+        mem_percentage_used
     )
 
 
