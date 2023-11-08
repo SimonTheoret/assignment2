@@ -65,10 +65,10 @@ class MultiHeadedAttention(nn.Module):
         self.head_size = head_size
         self.num_heads = num_heads
         self.sequence_length = sequence_length
-        self.WQ = nn.Linear(in_features = self.head_size, out_features = self.head_size)
-        self.WV = nn.Linear(in_features = self.head_size, out_features = self.head_size)
-        self.WK = nn.Linear(in_features = self.head_size, out_features = self.head_size) #TODO: wrong dimensions here!
-        self.WO = nn.Linear(in_features = self.num_heads * self.head_size, out_features = self.num_heads* self.head_size)
+        self.WQ = nn.Linear(in_features = self.head_size * self.num_heads, out_features = self.head_size*self.num_heads)
+        self.WV = nn.Linear(in_features = self.head_size * self.num_heads, out_features = self.head_size*self.num_heads)
+        self.WK = nn.Linear(in_features = self.head_size * self.num_heads, out_features = self.head_size*self.num_heads)
+        self.WO = nn.Linear(in_features = self.head_size * self.num_heads, out_features = self.head_size*self.num_heads)
 
         # ==========================
         # TODO: Write your code here
@@ -288,10 +288,10 @@ class MultiHeadedAttention(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        X = self.split_heads(hidden_states)
-        Q = self.WQ(X)
-        K = self.WK(X)
-        V = self.WV(X)
+        # X = self.split_heads(hidden_states)
+        Q = self.split_heads(self.WQ(hidden_states))
+        K = self.split_heads(self.WK(hidden_states))
+        V = self.split_heads(self.WV(hidden_states))
         Y = self.apply_attention(Q,K,V)
         o = self.WO(Y)
         return o
