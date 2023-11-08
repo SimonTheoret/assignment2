@@ -41,11 +41,18 @@ class LayerNorm(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        mean = torch.mean(inputs, dim=0)
-        var = torch.var(inputs, dim=0, correction=0)
-        num = inputs - mean
-        denom = torch.sqrt(var + self.eps)
-        return num / denom * self.weight + self.bias
+        mean = inputs.mean(-1, keepdim=True)
+        var = inputs.var(-1, keepdim=True, unbiased=False)
+        num = inputs-mean
+        denom = torch.sqrt(var+ self.eps)
+        out = num/denom
+        out = self.weight * out + self.bias
+        return out
+        # mean = torch.mean(inputs, dim=0)
+        # var = torch.var(inputs, dim=0, correction=0)
+        # num = inputs - mean
+        # denom = torch.sqrt(var + self.eps)
+        # return num / denom * self.weight + self.bias
 
     def reset_parameters(self):
         nn.init.ones_(self.weight)
@@ -60,14 +67,14 @@ class MultiHeadedAttention(nn.Module):
         self.sequence_length = sequence_length
         self.WQ = nn.Linear(in_features = self.head_size, out_features = self.head_size)
         self.WV = nn.Linear(in_features = self.head_size, out_features = self.head_size)
-        self.WK = nn.Linear(in_features = self.head_size, out_features = self.head_size)
+        self.WK = nn.Linear(in_features = self.head_size, out_features = self.head_size) #TODO: wrong dimensions here!
         self.WO = nn.Linear(in_features = self.num_heads * self.head_size, out_features = self.num_heads* self.head_size)
 
         # ==========================
         # TODO: Write your code here
         # ==========================
 
-    def get_attention_weights(self, queries, keys):
+    def get_attention_weights(self, queries, keys): #TODO: not ok
         """Compute the attention weights.
 
         This computes the attention weights for all the sequences and all the
@@ -119,10 +126,10 @@ class MultiHeadedAttention(nn.Module):
         b = b.astype(int)
         s = torch.from_numpy(b).to(device)
         xp = x*s - (10**4)*(1-s)
-        return F.softmax(xp, dim = 2)
+        return F.softmax(xp, dim = -1)
 
 
-    def apply_attention(self, queries, keys, values):
+    def apply_attention(self, queries, keys, values): #OK
         """Apply the attention.
 
         This computes the output of the attention, for all the sequences and
