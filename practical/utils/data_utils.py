@@ -42,7 +42,7 @@ def save_logs(
         f.write(f"{test_ppl}\n")
     with open(os.path.join(log_dir, "test_time.txt"), "w") as f:
         f.write(f"{test_time}\n")
-    with open(os.path.join(log_dir, "avg_mem_used"), "w") as f:
+    with open(os.path.join(log_dir, "avg_mem_used.txt"), "w") as f:
         f.write(f"{mem_used}\n")
-    with open(os.path.join(log_dir, "avg_mem_percentage_used"), "w") as f:
+    with open(os.path.join(log_dir, "avg_mem_percentage_used.txt"), "w") as f:
         f.write(f"{mem_percentage_used}\n")

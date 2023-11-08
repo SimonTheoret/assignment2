@@ -90,8 +90,8 @@ def train(epoch, model, dataloader, optimizer, args):
     perplexity = math.exp(mean_loss)
 
     tqdm.write(f"== [TRAIN] Epoch: {epoch}, Perplexity: {perplexity:.3f} ==>")
-    avg_used_mem = used_mem.sum()/len(used_mem) # average over batches
-    avg_per_used_mem = used_mem.sum()/len(used_mem) # average over batches
+    avg_used_mem = sum(used_mem)/len(used_mem) # average over batches
+    avg_per_used_mem = sum(used_mem)/len(used_mem) # average over batches
     return mean_loss, perplexity, time.time() - start_time, avg_used_mem, avg_per_used_mem
 
 
