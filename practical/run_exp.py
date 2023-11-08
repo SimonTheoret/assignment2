@@ -78,7 +78,7 @@ def train(epoch, model, dataloader, optimizer, args):
         loss.backward()
         optimizer.step()
         used_mem.append(gpu.mem_used) # gpu mem used during the batch
-        per_used_mem.append(gpu.mem_used/gpu.mem_total)# percentage gpu mem used during the batch
+        per_used_mem.append(gpu.mum_util)# percentage gpu mem used during the batch
         total_iters += 1
 
         if idx % args.print_every == 0:
@@ -91,7 +91,7 @@ def train(epoch, model, dataloader, optimizer, args):
 
     tqdm.write(f"== [TRAIN] Epoch: {epoch}, Perplexity: {perplexity:.3f} ==>")
     avg_used_mem = sum(used_mem)/len(used_mem) # average over batches
-    avg_per_used_mem = sum(used_mem)/len(used_mem) # average over batches
+    avg_per_used_mem = sum(per_used_mem)/len(per_used_mem) # average over batches
     return mean_loss, perplexity, time.time() - start_time, avg_used_mem, avg_per_used_mem
 
 
