@@ -78,7 +78,7 @@ def train(epoch, model, dataloader, optimizer, args):
         loss.backward()
         optimizer.step()
         used_mem.append(gpu.mem_used) # gpu mem used during the batch
-        per_used_mem.append(gpu.mum_util)# percentage gpu mem used during the batch
+        per_used_mem.append(gpu.mem_util)# percentage gpu mem used during the batch
         total_iters += 1
 
         if idx % args.print_every == 0:
