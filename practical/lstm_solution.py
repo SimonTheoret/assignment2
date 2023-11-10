@@ -115,19 +115,23 @@ class LSTM(nn.Module):
         # ==========================
         # TODO: Write your code here
         # ==========================
-        device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        batch_size = log_probas.shape[0]
-        sequence_length = log_probas.shape[1]
-        vocab_size = log_probas.shape[2]
-        T = -1*torch.sum(mask)  # Accounts for batch_dim !
-        total_loss = 0
-        for i in range(batch_size):
-            weight = torch.zeros(sequence_length, vocab_size).to(device)
-            log_prob = log_probas[i, :, :]  # ith sequence
-            for index, element in enumerate(targets[i, :]):
-                weight[index, element] = 1  # 1 at index, element, 0 elsewhere
-            total_loss += torch.sum(torch.mul(log_prob, weight))
-        return total_loss / T
+        log_probas = log_probas.view(-1, self.vocabulary_size)
+        targets = targets.view(-1)
+        mask = mask.view(-1).bool()
+        return F.nll_loss(log_probas[mask], targets[mask])
+        # device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        # batch_size = log_probas.shape[0]
+        # sequence_length = log_probas.shape[1]
+        # vocab_size = log_probas.shape[2]
+        # T = -1*torch.sum(mask)  # Accounts for batch_dim !
+        # total_loss = 0
+        # for i in range(batch_size):
+        #     weight = torch.zeros(sequence_length, vocab_size).to(device)
+        #     log_prob = log_probas[i, :, :]  # ith sequence
+        #     for index, element in enumerate(targets[i, :]):
+        #         weight[index, element] = 1  # 1 at index, element, 0 elsewhere
+        #     total_loss += torch.sum(torch.mul(log_prob, weight))
+        # return total_loss / T
 
     def initial_states(self, batch_size, device=None):
         if device is None:
