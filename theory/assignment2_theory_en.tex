@@ -221,7 +221,7 @@ See the assignment policy on the course website for more details.}
     \end{equation}
     We see that by selecting $\gamma = \frac{\lambda}{2 \eta}$, both scheme are identical.
     \subsubsection*{2.2}
-    % TODO: refaire cette explication
+    % TODO: refaire cette explication. Ou en trouver une meilleure...
     I would expect $\theta_{s}$ to be regularized more strongly, mainly due to how
     the magnitude of the weights do not have much impact on the final gradient
     update. For example, by taking the limit $\theta \rightarrow \pm \infty$, $\Delta \theta$ tends towards $c  \varepsilon$,
@@ -331,9 +331,60 @@ See the assignment policy on the course website for more details.}
 
     \Answer{
     % Write your answer here
+    \subsubsection*{3.1}
+    There is $N^{T}$ possible sentences.
+    \subsubsection*{3.2}
+    This approach is too computationally intensive. The growth scales
+    exponentially with the vocabulary, which mean it is often impossible to
+    determine the most likely sequence. This approaches is generally not feasible.
+    \subsubsection*{3.3}
+    The time complexity of this algorithm is $O(TB(N+1)) = O(TBN)$ and the space
+    complexity is $O(TB)$. As we see, the space complexity is not affected by
+    the size of the vocabulary, while the time complexity scales linearly with
+    the size of the vocabulary. This approaches is reasonable when the
+    vocabulary is large.
+    \subsubsection*{3.4}
+    \textbf{3.4a}
+    \\
+    For the greedy decoding the selected sequence will be '<BOS> the red rectangle' and it's
+    log probability is:
+    \begin{align*}
+      p(\bar{w}_{1:3}) &= \log \prod_{t=1}^{3} p(w_{t}| \boldmath{\bar{w}}_{0:t}) \\
+      &=\sum_{t=1}^{3} \log p(w_{t}| \boldmath{\bar{w}}_{0:t}) \\
+      &= \log p(w_{1}| w_{0})+\log p(w_{2}| \bar{w}_{0:1})+\log p(w_{3}| \bar{ w }_{0:2})\\
+      &= -1.5 -3.1 -4.5 \\
+      &= -9.1
+    \end{align*}We omitted $p(w_{0})$ because $p(w_{0})=1$ and $\log (1)=0$.
+    \\
+    \textbf{3.4b}
+    \\
+    For the beam search algorithm, we get two different paths.
+    $\mathbf{w}_{1:3}^{(1)}$ = 'the red rectangle', with log probability:
+    \begin{align*}
+      p(\bar{w}_{1:3}^{1}) &= \log \prod_{t=1}^{3} p(w_{t}| \boldmath{\bar{w}}_{0:t}) \\
+      &=\sum_{t=1}^{3} \log p(w_{t}| \boldmath{\bar{w}}_{0:t}) \\
+      &= \log p(w_{1}| w_{0})+\log p(w_{2}| \bar{w}_{0:1})+\log p(w_{3}| \bar{ w }_{0:2})\\
+      &= -1.5 -3.1 -4.5 \\
+      &= -9.1
+    \end{align*}
+    The second sequence is $\mathbf{w}_{1:3}^{(2)}$ = 'a blue square', with log probability:
+    \begin{align*}
+      p(\bar{w}_{1:3}^{2}) &= \log \prod_{t=1}^{3} p(w_{t}| \boldmath{\bar{w}}_{0:t}) \\
+      &=\sum_{t=1}^{3} \log p(w_{t}| \boldmath{\bar{w}}_{0:t}) \\
+      &= \log p(w_{1}| w_{0})+\log p(w_{2}| \bar{w}_{0:1})+\log p(w_{3}| \bar{ w }_{0:2})\\
+      &= -1.8 + -2.5 + -5.0\\
+      &= -9.3
+    \end{align*}
+    \subsubsection*{3.5}
+    The greedy decoding algorithm, it is very unlikely to find the global
+    optimum. In general, it will find a local optimum. In the case of the beam
+    search, it is $B$ times slower than the greedy algorithm, but has a higher
+    chance of finding the global optimum. It will also always perform better
+    than the greedy decoding algorithm. This algorithm is not well suited for
+    implementation requiring fast inference times or with limited memory.
     }
 \end{exercise}
-\begin{exercise} [3-4-2-2] (\textbf{RNN})
+\begin{exercise} 3-4-2-2 (\textbf{RNN})
     \label{ex:rnn_spectral}
     This question is about activation functions and vanishing/exploding gradients in recurrent neural networks (RNNs). Let $\sigma:\R\rightarrow\R$ be an activation function. 
     When the argument is a vector, we apply $\sigma$ element-wise. 
