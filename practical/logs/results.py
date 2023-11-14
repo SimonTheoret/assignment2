@@ -76,6 +76,20 @@ class DataDir:
                     new_dir[file] = [float(x) for x in content]
             self.exps[dir] = new_dir
 
+    def print_avg_times(self):
+        for dir in self.dir_names:
+            print("-----------------")
+            print(dir)
+            train_time = self.exps[dir]["train_time.txt"]
+            avg_train_time = sum(train_time)/len(train_time)
+            print(f"average train time: { avg_train_time }")
+            valid_time = self.exps[dir]["valid_time.txt"]
+            avg_valid_time = sum(valid_time)/len(valid_time)
+            print(f"average validation time: { avg_valid_time }")
+            test_time = self.exps[dir]["test_time.txt"]
+            avg_test_time = sum(test_time)/len(test_time)
+            print(f"average test time: { avg_test_time }")
+
 
 class Plotter:
     def __init__(self, dd: DataDir):
@@ -186,4 +200,6 @@ if __name__ == "__main__":
     main_titles = [x.replace("_", " ") for x in plotter.data_dir.dir_names]
     xlabels = ["time (secs)", "time (secs)", "epoch", "epoch"]
     ylabels = ["perplexity", "perplexity", "perplexity", "perplexity"]
-    plotter.plot_for_all_exp(dim, files_x, files_y, main_titles, titles, legends, xlabels, ylabels, show = False)
+    # plotter.plot_for_all_exp(dim, files_x, files_y, main_titles, titles, legends, xlabels, ylabels, show = False)
+
+    dd.print_avg_times()
