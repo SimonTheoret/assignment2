@@ -118,7 +118,7 @@ class Plotter:
                 files_x,
                 dir_list_y,
                 files_y,
-                main_titles[i],
+                main_titles[i], # 1 to 1 relation with data_dir.dir_names
                 titles,
                 legends,
                 xlabels,
