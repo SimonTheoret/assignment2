@@ -427,7 +427,7 @@ See the assignment policy on the course website for more details.}
              of $g_{t-1}$}\\
            &= W h_{t-1} + U x_{t} + b \quad \text{definition of $h_{t-1}$},
     \end{align*}which is what we were searching for. Notice how this also
-    implies $\sigma(g_{t})= h_{t}$
+    implies that $\sigma(g_{t})= h_{t}$
     \subsubsection*{4.2}
     We will show that
     $\norm{\pder{\mathbf{h}_{T}}{\mathbf{h}_{0}}} \xrightarrow{T\to \infty}0$.
@@ -440,11 +440,10 @@ See the assignment policy on the course website for more details.}
     \end{align*}
     If we take the norm and use the $L_{2}$ properties, we have:
     \begin{align*}
-      \norm{\pder{h_{n}}{h_{0}}} &= \norm{\prod_{k=1}^{n}  \sigma'(g_{k-1})W}\\
-                               &\leq \norm{W^{n} \text{Diag}(\gamma^{n})} \quad \text{bound
-                                 on $\sigma'$}\\
-                               &= \gamma^{n} \norm{W^{n}} \quad \text{property of matrix norm}\\
-                               &= \sqrt{\lambda_{1}((W^{n})^{\top}W^{n})}\gamma^{n}\quad \text{bound
+      \norm{\pder{h_{n}}{h_{0}}} &= \norm{\prod_{k=1}^{n}  \sigma'(g_{k})W}\\
+                               &\leq \prod_{k =1}^{n} \norm{W} \norm{\sigma'(g_{k})} \quad \text{$L_{2}$ property}\\
+                               &= \gamma^{n} \norm{W}^{n} \quad \text{bound on $\sigma'$}\\
+                               &= \sqrt{\lambda_{1}(W^{\top}W)}^{n}\gamma^{n}\quad \text{bound
                                  on $W$}\\
                                & \leq \gamma^{n} \pr{\sqrt{\frac{\delta^{2}}{\gamma^{2}}}}^{n}\\
                                &= \delta^{n} \xrightarrow{n \to \infty}0
