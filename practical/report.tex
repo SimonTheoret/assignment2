@@ -1,0 +1,162 @@
+\documentclass[12pt]{article}
+\usepackage[canadien]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\graphicspath{ {./logs/figures/} }
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{bm}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{todonotes}
+\usepackage{hyperref}
+\usepackage{monpackage}
+
+% If your paper is accepted, change the options for the package
+% aistats2e as follows:
+%
+%\usepackage[accepted]{aistats2e}
+%
+% This option will print headings for the title of your paper and
+% headings for the authors names, plus a copyright note at the end of
+% the first column of the first page.
+\setlength{\parindent}{0cm}
+\addtolength{\oddsidemargin}{-2cm}
+\addtolength{\evensidemargin}{-2cm}
+\setlength{\textwidth}{17.78cm}
+\addtolength{\topmargin}{-2.25cm}
+\setlength{\textheight}{23.24cm}
+\addtolength{\parskip}{5mm}
+\pagestyle{fancy}
+
+%************
+%* COMMANDS *
+%************
+
+\input{math_commands}
+
+\newif\ifexercise
+\exercisetrue
+%\exercisefalse
+
+\newif\ifsolution
+\solutiontrue
+%\solutionfalse
+
+\usepackage{booktabs}
+\usepackage[ruled,vlined]{algorithm2e}
+
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{exercise}{Question}%[chapter]
+\newtheorem{answer}{Answer} % asterisk to remove ordering
+
+\newcommand{\Exercise}[1]{
+\ifexercise#1\fi
+}
+
+\definecolor{answer}{rgb}{0.00, 0.12, 0.60}
+\newcommand{\Answer}[1]{
+\ifsolution\color{answer}\begin{answer}#1\end{answer}\fi
+}
+
+\newif\ifexercise
+\exercisetrue
+%\exercisefalse
+
+\newif\ifsolution
+\solutiontrue
+%\solutionfalse
+
+\usepackage{enumitem}
+\newcommand{\staritem}{
+\addtocounter{enumi}{1}
+\item[$\phantom{x}^{*}$\theenumi]}
+\setlist[enumerate,1]{leftmargin=*, label=\arabic*.}
+
+\newcommand{\customcommandlreg}{\ensuremath{L_{\textnormal{reg}}(f(\mathbf{x}^{(i)}, \mathbf{\theta}), \mathbf{y}^{(i)})}}
+\newcommand{\customcommandloss}{\ensuremath{L}(f(\mathbf{x}^{(i)}, \mathbf{\theta}), \mathbf{y}^{(i)})}
+
+\def\vdelta{{\bm{\delta}}}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+
+\fancyhead{}
+\fancyfoot{}
+
+\fancyhead[L]{
+  \begin{tabular}[b]{l}
+    IFT6135-A2023  \\
+    Prof: Aishwarya Agrawal \\
+  \end{tabular}
+}
+\fancyhead[R]{
+  \begin{tabular}[b]{r}
+    Assignment 2, Theoretical Part   \\
+    RNN, Optimization, Regularization, Transformers, Normalization\\
+  \end{tabular}
+}
+\fancyfoot[C]{- Do not distribute -}
+
+\vspace{1cm}
+
+\shorthandoff{:}
+{\textbf{Due Date: November 14th, 2023 at 11:00 pm}}\\
+
+
+\vspace{-0.5cm}
+\underline{Instructions}%
+\renewcommand{\labelitemi}{\textbullet}
+
+\begin{itemize}
+\item \emph{For all questions, show your work!}
+\item \emph{Use LaTeX and the template we provide when writing your answers.
+You may reuse most of the notation shorthands, equations and/or tables.
+See the assignment policy on the course website for more details.}
+\item \emph{The use of AI tools like Chat-GPT to find answers or parts of answers for any question in this assignment is not allowed. However, you can use these tools to improve the quality of your writing, like fixing grammar or making it more understandable. If you do use these tools, you must clearly explain how you used them and which questions or parts of questions you applied them to. Failing to do so or using these tools to find answers or parts of answers may result in your work being completely rejected, which means you'll receive a score of 0 for the entire theory or practical section.}
+\item \emph{Submit your answers electronically via Gradescope.}
+\end{itemize}
+\subsection*{Problem 2}
+\subsubsection*{Problem 2.5}
+My modules are all linear and are composed of 4 different
+layers:$(W_{k}, W_{v}, W_{q}, W_{o})$ with bias terms. Each of these square matrix is
+of size $(numheads \times headsize)^{2}$ and has a bias. Therefore, there are
+$$4 \pr{(numheads \times headsize)^{2} + numheads \times headsize}$$
+
+\subsection*{Problem 3}
+\subsubsection*{Problem 3.1}
+We have obtained the following figures:
+
+\begin{figure}[H]
+     \centering
+     \includegraphics*[scale = 0.4]{gpt1_layer_1_adam.png}
+     \caption{Training, validation perplexity, }
+     % \begin{subfigure}[b]{}
+     %     \centering
+     %     \includegraphics[width=\textwidth]{./logs/figures/decisionepoch1.png}
+     %     \caption{Decision boundary after 1 epoch}
+     % \end{subfigure}
+     % \hfill
+     % \begin{subfigure}[b]{}
+     %     \centering
+     %     \includegraphics[width=\textwidth]{./logs/figures/decisionepoch1.png}
+     %     \caption{Decision boundary after 2 epoch}
+     % \end{subfigure}
+     % \hfill
+     % \begin{subfigure}[b]{}
+     %     \centering
+     %     \includegraphics[width=\textwidth]{./logs/figures/decisionepoch1.png}
+     %     \caption{Decision boundary after 3 epoch}
+     % \end{subfigure}
+\end{figure}
+
+\end{document}

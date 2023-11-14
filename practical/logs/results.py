@@ -82,7 +82,6 @@ class Plotter:
         if dd.exps == None:
             dd.find_all_exps()
         self.data = dd.exps
-        print(dd.exps)
         self.data_dir = dd
         self.fig_path: Path = self._create_dir(dd.init_dir)
 
@@ -98,30 +97,35 @@ class Plotter:
         legends: list[str],
         xlabels: list[str],
         ylabels: list[str],
+        show: bool = True
     ):
         sns.set()
         fig, axes = plt.subplots(*dim, figsize = (12,15))
 
-        for i in range(dim[0]):
-            for j in range(dim[1]):
+        for i in range(0,dim[0]):
+            for j in range(0,dim[1]):
                 ax = axes[i,j]
-                if isinstance(files_x[i+j], str):
-                    x = self.data[dirs_x[i+j]][files_x[i+j]]
+                k  = i + j
+                if i == 1:
+                    k+=1
+                if isinstance(files_x[k], str):
+                    x = self.data[dirs_x[k]][files_x[k]]
                 else:
-                    x = files_x[i+j]
-                if isinstance(files_y[i+j], str):
-                    y = self.data[dirs_y[i+j]][files_y[i+j]]
+                    x = files_x[k]
+                if isinstance(files_y[k], str):
+                    y = self.data[dirs_y[k]][files_y[k]]
                 else:
-                    y = files_y[i+j]
-                ax.plot(x, y, label = legends[i+j])
-                ax.set_title(titles[i+j])
+                    y = files_y[k]
+                ax.plot(x, y, label = legends[k])
+                ax.set_title(titles[k])
                 ax.legend()
-                ax.set_ylabel(ylabels[i+j])
-                ax.set_xlabel(xlabels[i+j])
+                ax.set_ylabel(ylabels[k])
+                ax.set_xlabel(xlabels[k])
 
         fig.suptitle(main_title)
-        plt.savefig(self.fig_path / main_title)
-        plt.show()
+        plt.savefig(self.fig_path / main_title.replace(" ", "_"))
+        if show:
+            plt.show()
 
     def _create_dir(self, init_dir: str) -> Path:
         path = Path(init_dir) / "figures/"
@@ -140,6 +144,7 @@ class Plotter:
         legends: list[str],
         xlabels: list[str],
         ylabels: list[str],
+        show: bool = True
     ):
         for i, dir in enumerate(self.data_dir.dir_names):
             dir_list_x = [dir] * (dim[0] * dim[1])
@@ -155,15 +160,13 @@ class Plotter:
                 legends,
                 xlabels,
                 ylabels,
+                show = False
             )
 
 
 if __name__ == "__main__":
     dd = DataDir("/home/simon/Documents/a2023/DL/assignment2/practical/logs")
     dd.find_all_exps()
-    # for _,ele in dd.exps.items():
-    #     for _, el in ele.items():
-    #         print(type(el[0]))
     plotter = Plotter(dd)
     dim = (2, 2)
     files_x = [
@@ -181,6 +184,6 @@ if __name__ == "__main__":
     ]
     legends = ["training", "validation", "training", "validation"]
     main_titles = [x.replace("_", " ") for x in plotter.data_dir.dir_names]
-    xlabels = ["time(s)", "time(s)", "epoch", "epoch"]
+    xlabels = ["time (secs)", "time (secs)", "epoch", "epoch"]
     ylabels = ["perplexity", "perplexity", "perplexity", "perplexity"]
-    plotter.plot_for_all_exp(dim, files_x, files_y, main_titles, titles, legends, xlabels, ylabels)
+    plotter.plot_for_all_exp(dim, files_x, files_y, main_titles, titles, legends, xlabels, ylabels, show = False)
