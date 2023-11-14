@@ -508,8 +508,61 @@ See the assignment policy on the course website for more details.}
     feature of the application of the attention mechanism is the ability to
     represent what the model 'focuses on' for a given word in the generated caption
     \subsubsection*{Strenghts}
+    The author did not solve the image captionning problem. They nonetheless
+    advanced the domains of computer vision and natural language processing by
+    developping a SOTA model and incorporating many original ideas. Furthermore,
+    this paper has some interesting insights.  The first one being the use of
+    attention instead of some object detectors.  This gives the model the ability to
+    attend to abstract concepts rather than objects.  A novelty introduced by the
+    authors is the use of a convolutional layer instead of a fully connected layer
+    in the encoder network. It allows the model to selectively attend directly to
+    the encoded abstract features.  Their use of attention map on the encoded
+    abstract features has an interesting advantage with respect to interpretability
+    of the model. It allows us to interpret the attention weights and the output of
+    the model.  The attention weights can either be the probability the model gives
+    for a location on the image to be the right place to focus to predict the next
+    word or the relative importance of a given location for generating the next
+    word.  They proposed two different versions of the attention mechanism,
+    resulting in two different interpretations of the output and two different ways
+    to train the model, which is more than what most papers offer.
+
     \subsubsection*{Weaknesses}
+    Their article has a few weaknesses. Their two algorithms for soft attention
+    and hard attention are hard to understand due to the brevity of the authors.
+    Many choices in these two algorithms should be more explained. In the case
+    of the hard attention, they first gives techniques to reduce the variance of
+    the estimator without giving an explanation as to why they chose these
+    approaches. They then make connections between their approach and the
+    REINFORCE learning rule, which is an empty remark if someone is not
+    acquainted with the REINFORCE learning rule.
+    Their empirical testing has the big weakness of comparing their models with
+    only two metrics (BLEU and METEOR) and with only a few other competing
+    models. The difference of performance between their models and the best
+    competitors also seems to be dictated by the size of the test dataset. In
+    general, their models outperform the other models in a significant manner on
+    smaller datasets, such as Flickr8k and Flickr30k. The performance difference
+    is not that significant when compared on the COCO dataset. It would be
+    interesting to have a confidence interval around the performance of their
+    models, which would be useful for knowing when a difference of performance
+    between models is significant.
     \subsubsection*{Reflections}
+    This paper at the intersection of the RNN (more specifically LSTM) and CNN,
+    all the while incorporating the encoder decoder architecture. In class, we saw
+    how each of these models worked independantly and this paper shows how we can
+    compose many smaller models to build a multimodal model.  Writing automatically
+    the caption of a given image is at the intersection of NLP and computer vision.
+    Due to the recent effectiveness of the transformers architecture and the
+    attention mechanism (more specifically the scaled dot-product attention from the
+    paper 'Attention is all you need'), the natural directions for this line of work
+    is the implementation of a transformer model with for both the decoder and the
+    encoder.
+    This paper showed how we can use Monte Carlo simulations to replace the
+    common stochastic gradient descent. I'm wondering how effective this approach is
+    when training a neural network and in what machine learning domains can we use
+    Monte Carlo simulations to calculate the gradient. Finally, the use of a
+    variational lower bound in the hard attention pushed me down the rabbit hole of
+    bayesian statistics; which is making me wonder why we are not seeing more
+    bayesian concepts in machine learning.
     }
 \end{exercise}
 
