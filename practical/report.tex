@@ -11,6 +11,8 @@
 \usepackage{subfigure}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[normalem]{ulem}
+\useunder{\uline}{\ul}{}
 \usepackage{float}
 \usepackage{bm}
 \usepackage{url}
@@ -134,7 +136,24 @@ $$4 \pr{(numheads \times headsize)^{2} + numheads \times headsize}$$
 
 \subsection*{Problem 3}
 \subsubsection*{Problem 3.1}
-We have obtained the following figures:
+
+These are the lowest validation perplexity score across epochs:
+\begin{enumerate}
+  \item gpt1 layer 1 adam minimal validation perplexity: 148.970
+  \item gpt1 layer 1 adamw min validation perplexity: 148.512
+  \item gpt1 layer 1 momentum min validation perplexity: 684.063
+  \item gpt1 layer 1 sgd min validation perplexity: 1502.892
+  \item gpt1 layer 2 adamw min validation perplexity: 152.072
+  \item gpt1 layer 4 adamw min validation perplexity: 1486.629
+  \item lstm layer 1 adam min validation perplexity: 144.289
+  \item lstm layer 1 adamw min validation perplexity: 144.154
+  \item lstm layer 1 momentum min validation perplexity: 1654.189
+  \item lstm layer 1 sgd min validation perplexity: 2173.387
+  \item lstm layer 2 adamw min validation perplexity: 139.819
+  \item lstm layer 4 adamw min validation perplexity: 160.328
+\end{enumerate}
+
+We also have obtained the following figures:
 
 \begin{figure}[H]
      \centering
@@ -197,4 +216,24 @@ We have obtained the following figures:
      \caption{lstm with 4 layer and optmized with adamw perplexity over time and epochs}
 \end{figure}
 
+Here are the results of the 12 experiments:
+\begin{table}[H]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llllllllll}
+Exp & Architecture &  \#layers & Optimizer &Train Loss & Train PPL & Validation Loss & Validation PPL & Test Loss & Test PPL \\ \hline
+1  & LSTM & 1 & Adam      &4.399 & 81.436 & 4.971 & 144.289 & 4.995 & 147.777 \\
+2  & LSTM & 1 & Adamw     &4.392 & 80.854 & 4.970 & 144.154 & 5.001 & 148.673 \\
+3  & LSTM & 1 & SGD       &7.750 & 2322.216 & 7.684 & 2173.387 &  7.644 & 2088.849 \\
+4  & LSTM & 1 & Momentum  &7.446 & 1748.463 & 7.411 & 1654.189 & 7.377 & 1600.139 \\
+9  & LSTM & 2 & Adamw     &4.0733 & 58.754 & 4.986 & 146.357 & 5.021 & 151.656 \\
+10 & LSTM & 4 & Adamw     &4.470 & 87.406 & 5.086 & 161.846 & 5.106 & 165.131 \\
+5  & GPT1 & 1 & Adam      &3.765 & 43.19 & 5.16 & 174.650 & 5.182 & 178.151 \\
+6  & GPT1 & 1 & Adamw     &3.752 & 42.634 & 5.157 & 173,79 & 5.180 & 177.837 \\
+7  & GPT1 & 1 & SGD       &7.381 & 1605.992 & 7.315 & 1502.892 & 7.291 & 1467.53 \\
+8  & GPT1 & 1 & Momentum  &6.583 & 715.571 & 6.528 & 684.063 & 6.504 & 667.813 \\
+11 & GPT1 & 2 & Adamw     &4.167 & 64.525 & 5.026 & 152.330 & 5.023 & 151.896 \\
+12 & GPT1 & 4 & Adamw     &7.347 & 1552.593 & 7.304 & 1486.629 & 7.274 & 1443.59
+\end{tabular}}
+\caption{Results for the 12 experiments. Each models were trained on 10 epochs}
+\end{table}
 \end{document}

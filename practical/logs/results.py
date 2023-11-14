@@ -80,16 +80,36 @@ class DataDir:
         for dir in self.dir_names:
             print("-----------------")
             print(dir)
-            train_time = self.exps[dir]["train_time.txt"]
+            exp = self.exps[dir]
+            train_time = exp["train_time.txt"]
             avg_train_time = sum(train_time)/len(train_time)
             print(f"average train time: { avg_train_time }")
-            valid_time = self.exps[dir]["valid_time.txt"]
+
+            valid_time = exp["valid_time.txt"]
             avg_valid_time = sum(valid_time)/len(valid_time)
             print(f"average validation time: { avg_valid_time }")
-            test_time = self.exps[dir]["test_time.txt"]
+
+            test_time = exp["test_time.txt"]
             avg_test_time = sum(test_time)/len(test_time)
             print(f"average test time: { avg_test_time }")
 
+            train_loss = exp["train_loss.txt"][-1]
+            valid_loss = exp["valid_loss.txt"][-1]
+            test_loss = exp["test_loss.txt"][-1]
+            print(f"train loss: {train_loss}, validation loss: {valid_loss}, test loss: {test_loss}")
+
+            train_ppl = exp["train_ppl.txt"][-1]
+            valid_ppl = exp["valid_ppl.txt"][-1]
+            test_ppl = exp["test_ppl.txt"][-1]
+            print(f"train ppl: {train_ppl}, validation ppl: {valid_ppl}, test ppl: {test_ppl}")
+
+    def print_valid_ppl(self):
+        for dir in self.dir_names:
+            print("-----------------")
+            print(dir)
+            exp = self.exps[dir]
+            min_valid = np.min( np.array(exp['valid_ppl.txt']))
+            print(f"min validation perplexity: {min_valid}")
 
 class Plotter:
     def __init__(self, dd: DataDir):
@@ -203,3 +223,4 @@ if __name__ == "__main__":
     # plotter.plot_for_all_exp(dim, files_x, files_y, main_titles, titles, legends, xlabels, ylabels, show = False)
 
     dd.print_avg_times()
+    dd.print_valid_ppl()
