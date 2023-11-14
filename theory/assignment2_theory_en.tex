@@ -143,35 +143,35 @@ See the assignment policy on the course website for more details.}
     \subsubsection*{Batch normalization}
       \begin{align*}
         u_{batch} &= (FB)^{-1} \sum_{f = 1}^{F}  \sum_{b= i}^{B} x_{fb}\\
-        &= [2.333, 2.416]
+        &= [2.333, 2.416]^{\top}
       \end{align*} and
       \begin{align*}
         \sigma_{batch} &= (FB)^{-1} \sum_{f = 1}^{F}  \sum_{b= i}^{B}(x_{fb} -\mu_{batch})^{2}\\
-        &= [1.055, 1.243]
+        &= [1.055, 1.243]^{\top}
       \end{align*}
     \subsubsection*{Layer normalization}
       \begin{align*}
         u_{layer} &= (FC)^{-1} \sum_{f = 1}^{F}  \sum_{c= i}^{C} x_{fc}\\
-        &= [2.333, 2, 2.5, 2.666]
+        &= [[2.333], [ 2 ], [2.5], [2.666]]
       \end{align*} and
       \begin{align*}
         \sigma_{layer} &= (FC)^{-1} \sum_{f = 1}^{F}  \sum_{c= i}^{B}(x_{fc} -\mu_{layer})^{2}\\
-        &= [0.888, 1.333, 0.916, 1.222]
+        &= [[0.888], [1.333], [0.916], [1.222]]
       \end{align*}
     \subsubsection*{Instance normalization}
       \begin{align*}
         u_{instance} &= (F)^{-1} \sum_{f = 1}^{F}  x_{f}\\
-        &= [[[3        , 1.666],
-       [2        , 2        ],
-       [2        , 3        ],
-       [2.333, 3        ]]]
+        &= [[3        , 1.666]^{\top},
+       [2        , 2        ]^{\top},
+       [2        , 3        ]^{\top},
+       [2.333, 3        ]^{\top}]
       \end{align*} and
       \begin{align*}
         \sigma_{Instance} &= (F)^{-1} \sum_{f = 1}^{F}  x_{f}^{2} -\mu_{Instance}^{2}\\
-        &= [[0.666, 0.222],
-       [0.666, 2.        ],
-       [0.666, 0.666],
-          [1.555, 0.666]]
+        &= [[0.666, 0.222]^{\top},
+       [0.666, 2.        ]^{\top},
+       [0.666, 0.666]^{\top},
+          [1.555, 0.666]^{\top}]
       \end{align*}
     }
 \end{exercise}
@@ -378,12 +378,12 @@ See the assignment policy on the course website for more details.}
       &= -9.4
     \end{align*}
     \subsubsection*{3.5}
-    The greedy decoding algorithm, it is very unlikely to find the global
+    The greedy decoding algorithm is very unlikely to find the global
     optimum. In general, it will find a local optimum. In the case of the beam
-    search, it is $B$ times slower than the greedy algorithm, but has a higher
+    search, it is much slower than the greedy algorithm, but has a higher
     chance of finding the global optimum. It will also always perform better
     than the greedy decoding algorithm. This algorithm is not well suited for
-    implementation requiring fast inference times or with limited memory.
+    implementation requiring very fast inference times or with limited memory.
     }
 \end{exercise}
 \begin{exercise} 3-4-2-2 (\textbf{RNN})
@@ -426,18 +426,21 @@ See the assignment policy on the course website for more details.}
            &= W \sigma(W h_{t-2} , U x_{t-1} + b) + U x_{t} + b \quad  \text{definition
              of $g_{t-1}$}\\
            &= W h_{t-1} + U x_{t} + b \quad \text{definition of $h_{t-1}$},
-    \end{align*}which is what we were searching for.
+    \end{align*}which is what we were searching for. Notice how this also
+    implies $\sigma(g_{t})= h_{t}$
     \subsubsection*{4.2}
     We will show that
-    $\norm{\pder{\mathbf{g}_{T}}{\mathbf{g}_{1}}} \xrightarrow{T\to \infty}0$.
-    Firstly, note that $\pder{g_{n}}{g_{n-1}} = W \sigma'(g_{n-1})$. Therefore,
+    $\norm{\pder{\mathbf{h}_{T}}{\mathbf{h}_{0}}} \xrightarrow{T\to \infty}0$.
+    Firstly, note that $\pder{g_{n}}{h_{n-1}} = W $ and
+    $\pder{h_{n}}{g_{n}} = \sigma'(g_{n})$. Therefore,
     \begin{align*}
-      \pder{g_{n}}{g_{1}} &= \prod_{k = 2}^{n} \pder{g_{k}}{g_{k-1}}\\
-      &= \prod_{k=2}^{n} W \sigma'(g_{k-1}).
+      \pder{h_{n}}{h_{0}} &= \prod_{k = 1}^{n} \pder{h_{k}}{h_{k-1}}\\
+      &= \prod_{k =1}^{n} \pder{h_{k}}{g_{k}} \pder{g_{k}}{h_{k-1}} \\
+      &= \prod_{k=1}^{n}  \sigma'(g_{k})W.
     \end{align*}
     If we take the norm and use the $L_{2}$ properties, we have:
     \begin{align*}
-      \norm{\pder{g_{n}}{g_{1}}} &= \norm{\prod_{k=2}^{n} W \sigma'(g_{k-1})}\\
+      \norm{\pder{h_{n}}{h_{0}}} &= \norm{\prod_{k=1}^{n}  \sigma'(g_{k-1})W}\\
                                &\leq \norm{W^{n} \text{Diag}(\gamma^{n})} \quad \text{bound
                                  on $\sigma'$}\\
                                &= \gamma^{n} \norm{W^{n}} \quad \text{property of matrix norm}\\
@@ -446,17 +449,15 @@ See the assignment policy on the course website for more details.}
                                & \leq \gamma^{n} \pr{\sqrt{\frac{\delta^{2}}{\gamma^{2}}}}^{n}\\
                                &= \delta^{n} \xrightarrow{n \to \infty}0
     \end{align*}
-    If we considered $\norm{\pder{g_{n}}{h_{0}}}$ in place of
-    $\norm{\pder{g_{n}}{g_{1}}}$, we would obtain the same result
-    (i.e. $\norm{\pder{g_{n}}{h_{0}}} \xrightarrow{n \to \infty}0$) by noting that
-    $\pder{g_{n}}{h_{0}} =\pder{g_{n}}{g_{1}} \pder{g_{1}}{h_{0}}$ and that
-    $\pder{g_{1}}{h_{0}} = W$.
     \subsubsection*{4.3}
     The gradient could explode if the given condition reversed.  Moreover, the
     given condition is not necessary nor sufficient: we could have a deacreasing
     upper bound on $\sigma'$, such that $\sigma'(x) \xrightarrow{x \to \infty} 0$.
     \subsubsection*{4.4}
-    We can use gradient clipping.
+    We can use gradient clipping and $L_{2}$ regularization. Gradient clipping
+    preserve the direction of the gradient while $L_{2}$ regularization does not. My
+    favorite approach is $L_{2}$ regularization: it helps in preventing
+    overfitting in many cases and helps in keeping the weights small.
     }
 \end{exercise}
 
@@ -496,8 +497,20 @@ See the assignment policy on the course website for more details.}
     
     This question is subjective and so we will accept a variety of answers. You are expected to analyze the paper and offer your own perspective and ideas, beyond what the paper itself discusses.
 
+    \newpage
     \Answer{
     % Write your answer here
+    \subsubsection*{Summary}
+    The 'Show, Attend and Tell' paper describe an approach for generating
+    captions out of images. It propose a model based on the attention mechanism
+    which can be trained in a deterministic manner or stochastically. It present an
+    encoder decoder architecture. The encoder is a convolutional network generating
+    the feature maps of the image and the decoder is a LSTM generating the words. A
+    feature of the application of the attention mechanism is the ability to
+    represent what the model 'focuses on' for a given word in the generated caption
+    \subsubsection*{Strenghts}
+    \subsubsection*{Weaknesses}
+    \subsubsection*{Reflections}
     }
 \end{exercise}
 
