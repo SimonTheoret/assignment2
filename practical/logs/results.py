@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+import ast
+from pathlib import Path
+from typing import Any
+
 import matplotlib.pyplot as plt
 import seaborn as sns
-from typing import Any
-import ast
 
 
 class DataDir:
@@ -51,9 +53,96 @@ class DataDir:
             self.exps[dir] = new_dir
 
 
+class Plotter:
+    def __init__(self, dd: DataDir):
+        if dd.exps == None:
+            dd.find_all_exps()
+        self.data = dd.exps
+        self.data_dir = dd
+        self.fig_path: Path = self._create_dir(dd.init_dir)
+
+    def plot(
+        self,
+        dim: tuple[int, int],
+        dirs_x: list[str],
+        files_x: list[str],
+        dirs_y: list[str],
+        files_y: list[str],
+        main_title: str,
+        titles: list[str],
+        legends: list[str],
+        xlabels: list[str],
+        ylabels: list[str],
+    ):
+        sns.set()
+        fig, axes = plt.subplots(*dim)
+
+        for i in range(dim[0] * dim[1]):
+            ax = axes[i]
+            x = self.data[dirs_x[i]][files_x[i]]
+            y = self.data[dirs_y[i]][files_y[i]]
+            ax.plot(x, y)
+            ax.set_title(titles[i])
+            ax.legend(legends[i])
+            ax.set_ylabel(ylabels[i])
+            ax.set_xlabel(xlabels)
+
+        fig.suptitle(main_title)
+        plt.savefig(self.fig_path / main_title)
+        plt.show()
+
+    def _create_dir(self, init_dir: str) -> Path:
+        path = Path(init_dir) / "figures/"
+        path.mkdir(parents=False, exist_ok=True)
+        return path
+
+    def _plot_for_all_exp(
+        self,
+        dim: tuple[int, int],
+        dirs_x: list[str],
+        files_x: list[str],
+        dirs_y: list[str],
+        files_y: list[str],
+        main_titles: list[str],
+        titles: list[str],
+        legends: list[str],
+        xlabels: list[str],
+        ylabels: list[str],
+    ):
+        for i,dir in enumerate(self.data_dir.dir_names):
+            dir_list_x = [dir]*(dim[0]*dim[1])
+            dir_list_y = [dir]*(dim[0]*dim[1])
+            self.plot(
+                dim,
+                dir_list_x,
+                files_x,
+                dir_list_y,
+                files_y,
+                main_titles[i],
+                titles,
+                legends,
+                xlabels,
+                ylabels,
+            )
+        pass
+
+
 if __name__ == "__main__":
     dd = DataDir("/home/simon/Documents/a2023/DL/assignment2/practical/logs")
     dd.find_all_exps()
-    print(dd.exps["gpt1_layer_1_adam"]["train_time.txt"])
-    print(type(dd.exps["gpt1_layer_1_adam"]["avg_mem_used.txt"]))
-    print(dd.exps)
+    # for _,ele in dd.exps.items():
+    #     for _, el in ele.items():
+    #         print(type(el[0]))
+    plotter = Plotter(dd)
+    plotter.plot(
+        (2, 1),
+        ["gpt1_layer_1_adam", "gpt1_layer_1_adam"],
+        ["valid_loss.txt", "valid_loss.txt"],
+        ["gpt1_layer_1_adam", "gpt1_layer_1_adam"],
+        ["train_loss.txt", "train_loss.txt"],
+        "gros test",
+        ["test", "test2"],
+        ["test", "textf2"],
+        ["x", "encore x"],
+        ["y", "encore y"],
+    )
