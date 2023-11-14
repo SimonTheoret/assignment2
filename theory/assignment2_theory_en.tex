@@ -221,17 +221,19 @@ See the assignment policy on the course website for more details.}
     \end{equation}
     We see that by selecting $\gamma = \frac{\lambda}{2 \eta}$, both scheme are identical.
     \subsubsection*{2.2}
+    \textbf{2.2a}
     % TODO: refaire cette explication. Ou en trouver une meilleure...
     I would expect $\theta_{s}$ to be regularized more strongly, mainly due to how
     the magnitude of the weights do not have much impact on the final gradient
-    update. For example, by taking the limit $\theta \rightarrow \pm \infty$, $\Delta \theta$ tends towards $c  \varepsilon$,
-    with $c$ a constant depending on $\rho_{1}$, $\delta$ and $ \rho_{2}$. Similarily,
-    $\Delta \theta \xrightarrow{\theta \to 0} = \varepsilon k \frac{\rho_{1} s + (1-\rho_{1})h}{(\rho_{2}r+(1-\rho_{2})h^2)^{1/2} + \delta}$,
-    with $k$ a constant depending on $\rho_{1}$ and $\rho_{2}$.  Therefore, the rate of
-    change of the parameters does not depend upon the paremeters themselves in this
-    case.
+    update. This is due to division $\frac{\hat{s}}{\sqrt{\hat{r}}+\delta}$ in the update
+    term which cancels most of the effect of the $L_{2}$ norm.
+    \\
+    \textbf{2.2b}
+    In the case of the Adam wieght decay scheme, I expect both sets to be
+    decreased by the same relative amount due to the use of the $\lambda \theta$ term in
+    the parameters update.
     \subsubsection*{2.3}
-    In the first scenario (SGD), both approaches are idntical for the right
+    In the first scenario (SGD), both approaches are identical for the right
     $\gamma,\, \lambda$ parameters. Adam weight decay has the advantage of reducing the
     size of all the parameters based on their value, where as with the Adam L2
     scheme, some large weights are still possible. Therefore, Adam weight decay
@@ -332,17 +334,17 @@ See the assignment policy on the course website for more details.}
     \Answer{
     % Write your answer here
     \subsubsection*{3.1}
-    There is $N^{T}$ possible sentences.
+    There are $N^{T}$ possible sentences.
     \subsubsection*{3.2}
-    This approach is too computationally intensive. The growth scales
+    This approach is too computationally intensive. The complexity scales
     exponentially with the vocabulary, which mean it is often impossible to
-    determine the most likely sequence. This approaches is generally not feasible.
+    determine the most likely sequence for big vocabulary. Therefore, this
+    approaches is generally not feasible.
     \subsubsection*{3.3}
     The time complexity of this algorithm is $O(TB(N+1)) = O(TBN)$ and the space
-    complexity is $O(TB + BN) = O(B(T+N))$. As we see, the space complexity is not affected by
-    the size of the vocabulary, while the time complexity scales linearly with
-    the size of the vocabulary. This approaches is reasonable when the
-    vocabulary is large.
+    complexity is $O(TB + BN) = O(B(T+N))$. As we see, both the space and time
+    complexity grow linearly with the size of the vocabulary. This approaches is
+    reasonable when the vocabulary is large.
     \subsubsection*{3.4}
     \textbf{3.4a}
     \\
@@ -420,32 +422,39 @@ See the assignment policy on the course website for more details.}
     \subsubsection*{4.1}
     Suppose $g_{t-1} = W h _{t-2} +U x_{t-1} + b$. Therefore,
     \begin{align*}
-    g_{t}   &= W \sigma(g_{t-1}) + U x_{t} + b \\
-           &= W \sigma(W h_{t-2} , U x_{t-1} + b) + U x_{t} + b \\
-           &= W h_{t-1} + U x_{t} + b,
+    g_{t}   &= W \sigma(g_{t-1}) + U x_{t} + b \quad \text{definition of $g_{t}$}\\
+           &= W \sigma(W h_{t-2} , U x_{t-1} + b) + U x_{t} + b \quad  \text{definition
+             of $g_{t-1}$}\\
+           &= W h_{t-1} + U x_{t} + b \quad \text{definition of $h_{t-1}$},
     \end{align*}which is what we were searching for.
     \subsubsection*{4.2}
     We will show that
-    $\norm{\pder{\mathbf{g}_{T}}{\mathbf{g}_{0}}} \xrightarrow{T\to \infty}0$.
+    $\norm{\pder{\mathbf{g}_{T}}{\mathbf{g}_{1}}} \xrightarrow{T\to \infty}0$.
     Firstly, note that $\pder{g_{n}}{g_{n-1}} = W \sigma'(g_{n-1})$. Therefore,
     \begin{align*}
-      \pder{g_{n}}{g_{0}} &= \prod_{k = 1}^{n} \pder{g_{k}}{g_{k-1}}\\
-      &= \prod_{k=1}^{n} W \sigma'(g_{k-1}).
+      \pder{g_{n}}{g_{1}} &= \prod_{k = 2}^{n} \pder{g_{k}}{g_{k-1}}\\
+      &= \prod_{k=2}^{n} W \sigma'(g_{k-1}).
     \end{align*}
     If we take the norm and use the $L_{2}$ properties, we have:
     \begin{align*}
-      \norm{\pder{g_{n}}{g_{0}}} &= \norm{\prod_{k=1}^{n} W \sigma'(g_{k-1})}\\
+      \norm{\pder{g_{n}}{g_{1}}} &= \norm{\prod_{k=2}^{n} W \sigma'(g_{k-1})}\\
                                &\leq \norm{W^{n} \text{Diag}(\gamma^{n})} \quad \text{bound
                                  on $\sigma'$}\\
+                               &= \gamma^{n} \norm{W^{n}} \quad \text{property of matrix norm}\\
                                &= \sqrt{\lambda_{1}((W^{n})^{\top}W^{n})}\gamma^{n}\quad \text{bound
-                                 on $W$ and }\\
+                                 on $W$}\\
                                & \leq \gamma^{n} \pr{\sqrt{\frac{\delta^{2}}{\gamma^{2}}}}^{n}\\
-                                 &= \delta^{n} \xrightarrow{n \to \infty}0
+                               &= \delta^{n} \xrightarrow{n \to \infty}0
     \end{align*}
+    If we considered $\norm{\pder{g_{n}}{h_{0}}}$ in place of
+    $\norm{\pder{g_{n}}{g_{1}}}$, we would obtain the same result
+    (i.e. $\norm{\pder{g_{n}}{h_{0}}} \xrightarrow{n \to \infty}0$) by noting that
+    $\pder{g_{n}}{h_{0}} =\pder{g_{n}}{g_{1}} \pder{g_{1}}{h_{0}}$ and that
+    $\pder{g_{1}}{h_{0}} = W$.
     \subsubsection*{4.3}
     The gradient could explode if the given condition reversed.  Moreover, the
     given condition is not necessary nor sufficient: we could have a deacreasing
-    upper bound on $\sigma'$, such that $\sigma'(g_{t-1}) \xrightarrow{t \to \infty} 0$.
+    upper bound on $\sigma'$, such that $\sigma'(x) \xrightarrow{x \to \infty} 0$.
     \subsubsection*{4.4}
     We can use gradient clipping.
     }
