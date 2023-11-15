@@ -249,4 +249,15 @@ test loss. Their test perplexity was generally the lowest too.
 Both SGD and momentum generate high validation perplexity and do not generalize
 as well as Adam and Adamw, when comparing the test loss and the test perplexity.
 The high precision of Adam and Adamw came at a slightly higher training time.
+\subsubsection*{Problem 3.5}
+The LSTM performed better for this experiment. It was not yet overfitting, while
+the GPT1 model was.  It also had better validation and test perplexity.
+\subsubsection*{Problem 3.6}
+The result of the transformer architecture are underwhelming. It generally
+performed worst than the LSTM architecture. A possible reason is that the LSTM
+layers perform better than the transformer layers when there are only a few
+number of layers, while the transformers layers scale better when the depth of
+the network increases.
+\subsubsection*{Problem 3.7}
+
 \end{document}
