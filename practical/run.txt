@@ -12,3 +12,14 @@ copy this to run all experiments:
  python run_exp.py --model lstm --layers 4 --batch_size 16 --log --epochs 10 --optimizer adamw --exp_id lstm_layer_4_adamw;
  python run_exp.py --model gpt1 --layers 2 --batch_size 16 --log --epochs 10 --optimizer adamw --exp_id gpt1_layer_2_adamw;
  python run_exp.py --model gpt1 --layers 4 --batch_size 16 --log --epochs 10 --optimizer adamw --exp_id gpt1_layer_4_adamw;
+
+
+
+
+trainable params:
+lstm layer 1:  3019520
+lstm layer 2:  5120768
+lstm layer 4:  9323264
+gpt1 layer 1:  7087872
+gpt1 layer 2: 14175744
+gpt1 layer 4: 28351488

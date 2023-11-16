@@ -111,6 +111,19 @@ class DataDir:
             min_valid = np.min( np.array(exp['valid_ppl.txt']))
             print(f"min validation perplexity: {min_valid}")
 
+    def print_all_gpu_mem(self):
+        for dir in self.dir_names:
+            print("-----------------")
+            print(dir)
+            exp = self.exps[dir]
+            avg_mem = exp["avg_mem_used.txt"]
+            avg_mem = sum(avg_mem[1:])/len(avg_mem[1:])
+            avg_per_mem = exp["avg_mem_percentage_used.txt"]
+            avg_per_mem = sum(avg_per_mem[1:])/len(avg_per_mem[1:])
+            print(f"average memory used: {avg_mem}")
+            print(f"average memory used: {avg_per_mem}")
+
+
 class Plotter:
     def __init__(self, dd: DataDir):
         if dd.exps == None:
@@ -222,5 +235,6 @@ if __name__ == "__main__":
     ylabels = ["perplexity", "perplexity", "perplexity", "perplexity"]
     # plotter.plot_for_all_exp(dim, files_x, files_y, main_titles, titles, legends, xlabels, ylabels, show = False)
 
-    dd.print_avg_times()
-    dd.print_valid_ppl()
+    # dd.print_avg_times()
+    # dd.print_valid_ppl()
+    dd.print_all_gpu_mem()
