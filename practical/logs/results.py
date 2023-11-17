@@ -236,5 +236,5 @@ if __name__ == "__main__":
     # plotter.plot_for_all_exp(dim, files_x, files_y, main_titles, titles, legends, xlabels, ylabels, show = False)
 
     # dd.print_avg_times()
-    # dd.print_valid_ppl()
-    dd.print_all_gpu_mem()
+    dd.print_valid_ppl()
+    # dd.print_all_gpu_mem()
